@@ -381,7 +381,7 @@
                 const container = document.getElementById('finance-leads-list');
                 container.innerHTML = '<p class="text-xs text-gray-500 animate-pulse">Loading...</p>';
                 try {
-                    const q = query(collection(db, "users"), where("role", "in", ["finance_lead", "admin"]));
+                    const q = query(collection(db, "users"), where("role", "==", "finance_lead"));
                     const snap = await getDocs(q);
                     if (snap.empty) {
                         container.innerHTML = '<p class="text-xs text-gray-500">No Finance Leads promoted yet.</p>';
@@ -447,7 +447,7 @@
                         signOut(auth); return;
                     }
                     const userData = userDoc.data();
-                    const allowed = user.email === OWNER_EMAIL || userData.role === 'finance_lead' || userData.role === 'admin';
+                    const allowed = user.email === OWNER_EMAIL || userData.role === 'finance_lead';
                     if (!allowed) {
                         alert("SECURITY ALERT: You do not have Finance clearance.");
                         signOut(auth); return;
