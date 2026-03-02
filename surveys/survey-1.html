@@ -147,6 +147,16 @@
                         <svg id="btnSpinner" class="animate-spin ml-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     </button>
                 </form>
+
+                <!-- Thank You Screen (Initially Hidden) -->
+                <div id="thankYouScreen" class="hidden flex flex-col items-center justify-center py-8 sm:py-12 text-center">
+                    <div class="text-6xl mb-6">🙌</div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">Major W! Thanks for the intel.</h3>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto text-lg leading-relaxed">Your input is literally shaping the future of ed-tech in Ghana. We're cooking up something massive for you.</p>
+                    <a href="https://azlearner.me" target="_blank" class="inline-flex items-center justify-center bg-gray-900 text-white font-bold py-4 px-8 rounded-xl hover:bg-black focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all active:scale-95 shadow-lg w-full sm:w-auto">
+                        Explore AZ Learner 🚀
+                    </a>
+                </div>
             </div>
         </div>
     </main>
@@ -158,9 +168,9 @@
     <!-- Firebase SDK (v11) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Your provided Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCKpJ7YzuHMTaTC3jXFWiEPmuwdTU4h96Y",
             authDomain: "az-learner.firebaseapp.com",
@@ -170,27 +180,44 @@
             appId: "1:12958795950:web:326411293864571040453f"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // Sign in anonymously immediately
+        signInAnonymously(auth).catch((error) => console.error("Anonymous auth failed:", error));
 
         const form = document.getElementById('surveyForm');
         const submitBtn = document.getElementById('submitBtn');
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
         const statusMessage = document.getElementById('statusMessage');
+        const thankYouScreen = document.getElementById('thankYouScreen');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Set Loading State
             submitBtn.disabled = true;
             btnText.textContent = "Processing...";
             btnSpinner.classList.remove('hidden');
-            statusMessage.className = "hidden"; // reset status
+            statusMessage.className = "hidden"; 
             
-            // Gather Data
+            if (!auth.currentUser) {
+                try {
+                    await signInAnonymously(auth);
+                } catch (err) {
+                    statusMessage.textContent = "Auth connection error. Please refresh and try again.";
+                    statusMessage.className = "rounded-lg p-4 text-sm font-medium bg-red-50 text-red-800 border border-red-200 block mt-4";
+                    submitBtn.disabled = false;
+                    btnText.textContent = "Submit Response";
+                    btnSpinner.classList.add('hidden');
+                    return;
+                }
+            }
+            
             const formData = new FormData(form);
+            
+            // Explicitly gathering all 7 points of telemetry
             const surveyData = {
                 email: formData.get('email'),
                 q1_calculate_freq: formData.get('q1_calculate_freq'),
@@ -199,29 +226,20 @@
                 q4_surprised: formData.get('q4_surprised'),
                 q5_target_score_known: formData.get('q5_target_score_known'),
                 q6_app_usage: formData.get('q6_app_usage'),
-                q7_monetization: formData.get('q7_monetization'),
+                q7_monetization: formData.get('q7_monetization'), // This captures Q7 correctly
                 timestamp: serverTimestamp(),
-                userAgent: navigator.userAgent
+                userAgent: navigator.userAgent,
+                userId: auth.currentUser.uid 
             };
 
             try {
-                // Save to standard Firestore root collection for GitHub pages deployment
                 await addDoc(collection(db, "surveyResponses"), surveyData);
-                
-                // Show Success Message
-                form.reset();
-                statusMessage.textContent = "Boom! 🎉 Response recorded. Thanks for shaping the future with AZ Learner.";
-                statusMessage.className = "rounded-lg p-4 text-sm font-medium bg-green-50 text-green-800 border border-green-200 block";
-                
-                // Keep button disabled after success to prevent double submission easily
-                btnText.textContent = "Submitted";
-                btnSpinner.classList.add('hidden');
+                form.classList.add('hidden');
+                thankYouScreen.classList.remove('hidden');
             } catch (error) {
                 console.error("Error adding document: ", error);
-                statusMessage.textContent = "Yikes! Something went wrong connecting to the database. Try again.";
+                statusMessage.textContent = "Database connection error. Try again.";
                 statusMessage.className = "rounded-lg p-4 text-sm font-medium bg-red-50 text-red-800 border border-red-200 block";
-                
-                // Reset Button
                 submitBtn.disabled = false;
                 btnText.textContent = "Submit Response";
                 btnSpinner.classList.add('hidden');
