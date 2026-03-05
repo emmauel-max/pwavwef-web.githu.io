@@ -77,9 +77,14 @@
             <div class="bg-white shadow-xl rounded-2xl border border-gray-200 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
                     <h3 class="text-lg leading-6 font-bold text-gray-900">Survey Responses</h3>
-                    <button id="refreshBtn" class="text-sm bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50 text-gray-700 font-medium transition-colors shadow-sm">
-                        Refresh Data
-                    </button>
+                    <div class="flex gap-2">
+                        <button id="refreshBtn" class="text-sm bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50 text-gray-700 font-medium transition-colors shadow-sm">
+                            Refresh Data
+                        </button>
+                        <button id="csvBtn" class="text-sm bg-indigo-600 border border-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-700 text-white font-medium transition-colors shadow-sm">
+                            Save as CSV
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -90,6 +95,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Methodology</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Pain Points</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Validation</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Open-Ended Response (Q8)</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
@@ -126,6 +132,7 @@
         const loginBtnText = document.getElementById('loginBtnText');
         const logoutBtn = document.getElementById('logoutBtn');
         const refreshBtn = document.getElementById('refreshBtn');
+        const csvBtn = document.getElementById('csvBtn');
         const tableBody = document.getElementById('tableBody');
 
         const statTotal = document.getElementById('statTotal');
@@ -169,8 +176,34 @@
             fetchData();
         });
 
+        csvBtn.addEventListener('click', () => {
+            saveAsCSV();
+        });
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeCsv(value) {
+            if (value == null) return '';
+            const str = String(value);
+            if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+
+        // let is used here because fetchData() reassigns the entire array on each refresh
+        let allSurveyData = [];
+
         async function fetchData() {
-            tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">Fetching latest datasets...</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">Fetching latest datasets...</td></tr>`;
             
             try {
                 const q = query(collection(db, "surveyResponses"), orderBy("timestamp", "desc"));
@@ -180,6 +213,7 @@
                 let totalResponses = 0;
                 let potentialUsers = 0;
                 let potentialPayers = 0;
+                allSurveyData = [];
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
@@ -188,6 +222,7 @@
                     console.log("Raw Firebase Doc Fetch:", doc.id, data);
 
                     totalResponses++;
+                    allSurveyData.push(data);
                     
                     if(data.q6_app_usage === 'Definitely' || data.q6_app_usage === 'Maybe') potentialUsers++;
                     if(data.q7_monetization === 'Yes' || data.q7_monetization === 'Maybe') potentialPayers++;
@@ -195,35 +230,39 @@
                     const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : 'N/A';
                     
                     // Fallback logic added here just in case the key is missing from old tests
-                    const payValue = data.q7_monetization ? data.q7_monetization : '<span class="text-red-400 italic">No Data Sent</span>';
+                    const payValue = data.q7_monetization ? escapeHtml(data.q7_monetization) : '<span class="text-red-400 italic">No Data Sent</span>';
+                    const q8Text = data.q8_feedback ? escapeHtml(data.q8_feedback) : '<span class="text-gray-400 italic">No response</span>';
 
                     html += `
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-bold text-gray-900">${data.email || 'Anonymous'}</div>
-                                <div class="text-xs text-gray-500">${date}</div>
+                                <div class="text-sm font-bold text-gray-900">${escapeHtml(data.email) || 'Anonymous'}</div>
+                                <div class="text-xs text-gray-500">${escapeHtml(date)}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900"><span class="font-medium">Freq:</span> ${data.q1_calculate_freq || '-'}</div>
-                                <div class="text-sm text-gray-900"><span class="font-medium">Via:</span> ${data.q2_current_method || '-'}</div>
-                                <div class="text-xs text-gray-500 mt-1">Confidence: ${data.q3_confidence || '-'}/5</div>
+                                <div class="text-sm text-gray-900"><span class="font-medium">Freq:</span> ${escapeHtml(data.q1_calculate_freq) || '-'}</div>
+                                <div class="text-sm text-gray-900"><span class="font-medium">Via:</span> ${escapeHtml(data.q2_current_method) || '-'}</div>
+                                <div class="text-xs text-gray-500 mt-1">Confidence: ${escapeHtml(data.q3_confidence) || '-'}/5</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900"><span class="font-medium">Surprised:</span> <span class="${data.q4_surprised === 'Yes' ? 'text-red-600 font-bold' : ''}">${data.q4_surprised || '-'}</span></div>
-                                <div class="text-sm text-gray-900"><span class="font-medium">Know Target:</span> <span class="${data.q5_target_score_known === 'No' ? 'text-red-600 font-bold' : ''}">${data.q5_target_score_known || '-'}</span></div>
+                                <div class="text-sm text-gray-900"><span class="font-medium">Surprised:</span> <span class="${data.q4_surprised === 'Yes' ? 'text-red-600 font-bold' : ''}">${escapeHtml(data.q4_surprised) || '-'}</span></div>
+                                <div class="text-sm text-gray-900"><span class="font-medium">Know Target:</span> <span class="${data.q5_target_score_known === 'No' ? 'text-red-600 font-bold' : ''}">${escapeHtml(data.q5_target_score_known) || '-'}</span></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${data.q6_app_usage === 'Definitely' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                                  Use: ${data.q6_app_usage || '-'}
+                                  Use: ${escapeHtml(data.q6_app_usage) || '-'}
                                 </span>
                                 <div class="mt-2 text-sm text-gray-900 font-medium">Pay: ${payValue}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-700 max-w-xs break-words">${q8Text}</div>
                             </td>
                         </tr>
                     `;
                 });
 
                 if (totalResponses === 0) {
-                    html = `<tr><td colspan="4" class="px-6 py-10 text-center text-sm text-gray-500">No responses yet.</td></tr>`;
+                    html = `<tr><td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500">No responses yet.</td></tr>`;
                 }
 
                 tableBody.innerHTML = html;
@@ -234,8 +273,55 @@
 
             } catch (error) {
                 console.error("Data Fetch Error:", error);
-                tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-10 text-center text-sm text-red-500 bg-red-50">Error pulling data. Verify Firestore permissions.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-sm text-red-500 bg-red-50">Error pulling data. Verify Firestore permissions.</td></tr>`;
             }
+        }
+
+        function saveAsCSV() {
+            if (allSurveyData.length === 0) {
+                alert('No data to export. Please refresh data first.');
+                return;
+            }
+
+            const headers = [
+                'Date',
+                'Email',
+                'Q1: Calculate Frequency',
+                'Q2: Current Method',
+                'Q3: Confidence',
+                'Q4: Surprised',
+                'Q5: Target Score Known',
+                'Q6: App Usage',
+                'Q7: Monetization',
+                'Q8: Open-Ended Feedback'
+            ];
+
+            const rows = allSurveyData.map(data => {
+                const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString() : '';
+                return [
+                    escapeCsv(date),
+                    escapeCsv(data.email),
+                    escapeCsv(data.q1_calculate_freq),
+                    escapeCsv(data.q2_current_method),
+                    escapeCsv(data.q3_confidence),
+                    escapeCsv(data.q4_surprised),
+                    escapeCsv(data.q5_target_score_known),
+                    escapeCsv(data.q6_app_usage),
+                    escapeCsv(data.q7_monetization),
+                    escapeCsv(data.q8_feedback)
+                ].join(',');
+            });
+
+            const csvContent = [headers.map(escapeCsv).join(','), ...rows].join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `survey_responses_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
