@@ -237,7 +237,7 @@
 
 <!-- AZ Learner logo watermark -->
 <div class="logo-watermark" id="logoWatermark">
-  <img src="brand.png" alt="AZ Learner" onerror="this.parentElement.style.gap='0';this.style.display='none'">
+  <img src="favicon.png" alt="AZ Learner" onerror="this.parentElement.style.gap='0';this.style.display='none'">
   <span>AZ Learner</span>
 </div>
 
@@ -428,7 +428,6 @@
   const track   = document.getElementById('lyricsTrack');
   const display = document.getElementById('timer-display');
   let   startTs = null;
-  let   rafId;
 
   function formatTime(sec) {
     const m = Math.floor(sec / 60);
@@ -440,17 +439,46 @@
     if (!startTs) startTs = ts;
     const elapsed = (ts - startTs) / 1000;
     display.textContent = formatTime(elapsed);
-    rafId = requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
   }
-  rafId = requestAnimationFrame(tick);
+  requestAnimationFrame(tick);
+
+  /* ── Freeze on last two lines ────────────────────────────────── */
+  /* Watch the final lyric line.  The moment it enters the viewport
+     both "AZ Learner…" and "Learn your way." are visible, so we
+     pause the CSS animation permanently at that position.          */
+  let freezeObserver = null;
+
+  function observeLastLine() {
+    const lastLine = document.getElementById('lastLine');
+    if (!lastLine) return;
+    freezeObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          track.style.animationPlayState = 'paused';
+          obs.disconnect();
+          freezeObserver = null;
+        }
+      });
+    }, { threshold: 0 });
+    freezeObserver.observe(lastLine);
+  }
+
+  observeLastLine();
 
   /* Restart */
   document.getElementById('btnRestart').addEventListener('click', () => {
+    /* Disconnect any active observer so it does not double-fire */
+    if (freezeObserver) { freezeObserver.disconnect(); freezeObserver = null; }
+    /* Clear paused state and restart CSS animation */
+    track.style.animationPlayState = '';
     track.style.animation = 'none';
-    track.offsetHeight;   // force reflow to restart CSS animation
+    void track.offsetHeight;   /* force reflow to restart CSS animation */
     track.style.animation = '';
     startTs = null;
     display.textContent = '0:00';
+    /* Re-arm the freeze observer for the new playthrough */
+    observeLastLine();
   });
 
   /* Hide UI for clean screen-record */
@@ -481,8 +509,10 @@
     let stream;
     try {
       stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { frameRate: { ideal: 30 } },
-        audio: false
+        video: { frameRate: { ideal: 30 }, displaySurface: 'browser' },
+        audio: false,
+        selfBrowserSurface: 'include',  /* include this tab in the picker */
+        preferCurrentTab: true          /* auto-select this tab where supported */
       });
     } catch (err) {
       /* User cancelled or permission denied */
