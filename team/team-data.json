@@ -45,6 +45,23 @@
         "linkedin": "",
         "twitter": "https://twitter.com/Finalboss"
       }
+    },
+    {
+      "name": "Emmanuel Larbi",
+      "role": "Administrative assistant",
+      "image": "https://www.facebook.com/photo/?fbid=122142402152626896&set=a.122104663442626896&__tn__=%3C",
+      "bio": "My name is Emmanuel Larbi, and I am currently enrolled in University of Cape Coast, dedicating my academic pursuits to obtaining a Bachelor of Science degree in Tourism Management. My educational journey is complemented by my active involvement with AZ LEARNER, a comprehensive student application designed to streamline various aspects of student life. Within AZ LEARNER, I hold the position of Administrative Assistant, a role that allows me to contribute significantly to the platform's functionality and user experience. As an Administrator, my responsibilities encompass a wide range of tasks, including efficient user and account management, ensuring a seamless and secure experience for all users. Furthermore, I am deeply involved in content and resource administration, carefully curating and organizing the app's resources to provide students with valuable and easily accessible information. Another crucial aspect of my role is fostering user engagement, creating initiatives and opportunities for students to connect with the platform and its resources. AZ LEARNER itself is designed as an all-encompassing solution for students, offering a suite of tools to enhance their academic journey. The app provides features that allow students to effectively organize their class schedules and manage their time efficiently. In addition, AZ LEARNER assists students in building their professional profiles by offering tools to create and refine their CVs, preparing them for future career opportunities. Recognizing the challenges students face with academic projects, the app offers guidance and support to navigate these tasks successfully. Moreover, AZ LEARNER simplifies the often cumbersome process of assignment submission by offering printing and delivery services, ensuring students can meet their deadlines with ease.",
+      "profile": "profiles/emmanuel-larbi.html",
+      "skills": [
+        "Communication Skills",
+        "Teamwork",
+        "Problem Solving"
+      ],
+      "socials": {
+        "github": "https://github.com/emmauel-max",
+        "linkedin": "https://www.linkedin.com/in/emmanuel-larbi-88311a3a6?trk=contact-info",
+        "twitter": ""
+      }
     }
   ]
 }
