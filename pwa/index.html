@@ -17,9 +17,14 @@
 
     <!-- PWA: iOS / Safari home-screen meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AZ Learner">
+    <!-- iOS requires apple-touch-icon to show the correct home screen icon -->
     <link rel="apple-touch-icon" href="/pwa/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/pwa/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/pwa/icons/icon-192.png">
 
     <!-- PWA: Microsoft Tile -->
     <meta name="msapplication-TileColor" content="#448AFF">
@@ -140,9 +145,169 @@
 .dark.main-theme .ticket-stub {
     background-image: radial-gradient(circle at 0 50%, transparent 10px, #1e293b 11px);
 }
+
+/* === SPLASH SCREEN === */
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0f172a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+#splash-screen img {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(68,138,255,0.4);
+}
+#splash-screen h1 {
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+#splash-screen p {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    margin-top: -16px;
+}
+.splash-bar-track {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+.splash-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #448AFF;
+    border-radius: 9999px;
+    transition: width 0.1s linear;
+}
+
+/* === PWA INSTALL BANNER (iOS & Android) === */
+#pwa-install-banner {
+    position: fixed;
+    bottom: 64px; /* above bottom nav */
+    left: 0;
+    right: 0;
+    z-index: 45;
+    padding: 0 12px 8px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+#pwa-install-banner.hidden {
+    display: none;
+}
+.install-banner-inner {
+    background: #1e293b;
+    border: 1px solid rgba(68,138,255,0.4);
+    border-radius: 16px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
+}
+.install-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+.install-banner-text {
+    flex: 1;
+    min-width: 0;
+}
+.install-banner-text strong {
+    display: block;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+.install-banner-text span {
+    display: block;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.72rem;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+.install-banner-btn {
+    background: #448AFF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.install-banner-close {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+/* iOS share arrow hint */
+.ios-share-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.72rem;
+}
+.ios-share-hint i {
+    color: #448AFF;
+}
     </style>
 </head>
 <body class="font-sans antialiased transition-colors duration-200 bg-lightBg text-gray-900 dark:bg-darkBg dark:text-white pb-20 selection:bg-blueAccent selection:text-white">
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen" role="status" aria-label="Loading AZ Learner">
+        <img src="/pwa/icons/icon-192.png" alt="AZ Learner icon">
+        <div style="text-align:center">
+            <h1>AZ Learner 🎓</h1>
+            <p>The Squad Companion</p>
+        </div>
+        <div class="splash-bar-track">
+            <div class="splash-bar-fill" id="splash-bar"></div>
+        </div>
+    </div>
+
+    <!-- PWA INSTALL BANNER (shown for iOS Safari & Android Chrome) -->
+    <div id="pwa-install-banner" class="hidden" role="complementary" aria-label="Install app banner">
+        <div class="install-banner-inner">
+            <img src="/pwa/icons/icon-192.png" alt="" class="install-banner-icon">
+            <div class="install-banner-text">
+                <strong id="install-banner-title">Install AZ Learner</strong>
+                <span id="install-banner-desc">Add to your home screen for the best experience.</span>
+                <div class="ios-share-hint hidden" id="ios-share-hint">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                    <span>Tap <strong>Share</strong> → <strong>Add to Home Screen</strong></span>
+                </div>
+            </div>
+            <button id="install-banner-action-btn" class="install-banner-btn" onclick="pwaInstall.triggerInstall()">Install</button>
+            <button class="install-banner-close" aria-label="Dismiss install banner" onclick="pwaInstall.dismissBanner()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
 
     <div id="recaptcha-container"></div>
     <audio id="alert-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="none"></audio>
@@ -726,6 +891,16 @@
     </div>
     <button onclick="mfaManager.startEnrollment()" id="btn-enroll-mfa" class="bg-gray-200 dark:bg-gray-700 text-xs font-bold px-4 py-2 rounded-lg">Enable</button>
 </div>
+            <!-- Install App (hidden until PWA install is available) -->
+            <div id="settings-install-row" class="hidden flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div>
+                    <h3 class="font-bold text-lg">Install App</h3>
+                    <p class="text-xs opacity-60" id="settings-install-desc">Add AZ Learner to your home screen.</p>
+                </div>
+                <button id="settings-install-btn" onclick="pwaInstall.triggerInstall()" class="bg-blueAccent text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Install
+                </button>
+            </div>
             <div class="text-center opacity-40 text-xs mt-10">
                 <p>AZ Learner v2.2</p>
                 <p>Built for the Squad 🇬🇭</p>
@@ -3918,6 +4093,255 @@ document.getElementById('admin-team-list').innerHTML = adminHtml || '<tr><td col
                     .catch((err) => console.warn('[SW] Registration failed:', err));
             });
         }
+    </script>
+
+    <!-- PWA: Splash Screen + Install Logic -->
+    <script>
+    // ─── Splash Screen ──────────────────────────────────────────────────────────
+    (function () {
+        const splash = document.getElementById('splash-screen');
+        const bar = document.getElementById('splash-bar');
+        if (!splash || !bar) return;
+
+        const MIN_DISPLAY_MS = 1800; // show splash for at least 1800 ms
+        const start = Date.now();
+        let pct = 0;
+        let rafId;
+
+        function step() {
+            // Exponential ease toward 90% (fast start, slows near 90%) with a
+            // small minimum increment (0.3) so it always moves even near the target.
+            pct = Math.min(pct + (90 - pct) * 0.04 + 0.3, 90);
+            bar.style.width = pct + '%';
+            rafId = requestAnimationFrame(step);
+        }
+        rafId = requestAnimationFrame(step);
+
+        function dismiss() {
+            cancelAnimationFrame(rafId);
+            bar.style.width = '100%';
+            setTimeout(() => splash.classList.add('hidden'), 300);
+        }
+
+        function tryDismiss() {
+            const elapsed = Date.now() - start;
+            const remaining = MIN_DISPLAY_MS - elapsed;
+            if (remaining > 0) {
+                setTimeout(dismiss, remaining);
+            } else {
+                dismiss();
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            tryDismiss();
+        } else {
+            window.addEventListener('load', tryDismiss, { once: true });
+        }
+    })();
+
+    // ─── PWA Install Manager ────────────────────────────────────────────────────
+    const pwaInstall = (function () {
+        const DISMISSED_KEY = 'az_pwa_banner_dismissed';
+        const DISMISSED_IOS_KEY = 'az_pwa_ios_dismissed';
+
+        let deferredPrompt = null; // Android / Chrome BeforeInstallPromptEvent
+        const BANNER_DELAY_MS = 2500; // ms to wait before showing install banner
+
+        // ── Helpers ──
+        function isIOS() {
+            return /iP(hone|ad|od)/.test(navigator.userAgent) && !window.MSStream;
+        }
+        function isSafari() {
+            return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        }
+        function isStandalone() {
+            return window.navigator.standalone === true ||
+                window.matchMedia('(display-mode: standalone)').matches ||
+                window.matchMedia('(display-mode: fullscreen)').matches;
+        }
+        function isDismissed(key) {
+            try { return !!localStorage.getItem(key); } catch { return false; }
+        }
+        function markDismissed(key) {
+            try { localStorage.setItem(key, '1'); } catch {}
+        }
+
+        // ── Banner UI ──
+        function showBanner(isIosMode) {
+            const banner = document.getElementById('pwa-install-banner');
+            const actionBtn = document.getElementById('install-banner-action-btn');
+            const desc = document.getElementById('install-banner-desc');
+            const iosHint = document.getElementById('ios-share-hint');
+            const settingsRow = document.getElementById('settings-install-row');
+            const settingsDesc = document.getElementById('settings-install-desc');
+            if (!banner) return;
+
+            if (isIosMode) {
+                if (actionBtn) actionBtn.classList.add('hidden');
+                if (iosHint) iosHint.classList.remove('hidden');
+                if (desc) desc.textContent = 'Install on your iPhone in 3 steps:';
+                if (settingsRow) {
+                    settingsRow.classList.remove('hidden');
+                    settingsRow.querySelector('button').onclick = showIosModal;
+                }
+                if (settingsDesc) settingsDesc.textContent = 'Follow the steps to add to home screen.';
+            } else {
+                if (actionBtn) actionBtn.classList.remove('hidden');
+                if (iosHint) iosHint.classList.add('hidden');
+                if (desc) desc.textContent = 'Add to your home screen for the best experience.';
+                if (settingsRow) settingsRow.classList.remove('hidden');
+            }
+            banner.classList.remove('hidden');
+        }
+
+        function hideBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.classList.add('hidden');
+        }
+
+        // ── iOS instruction modal ──
+        function showIosModal() {
+            // Build a simple full-screen overlay with step-by-step instructions
+            const existing = document.getElementById('ios-install-modal');
+            if (existing) { existing.classList.remove('hidden'); return; }
+
+            const modal = document.createElement('div');
+            modal.id = 'ios-install-modal';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-label', 'How to install AZ Learner on iPhone');
+            modal.style.cssText = [
+                'position:fixed', 'inset:0', 'z-index:9998',
+                'background:rgba(15,23,42,0.96)',
+                'display:flex', 'flex-direction:column',
+                'align-items:center', 'justify-content:center',
+                'padding:24px', 'gap:20px'
+            ].join(';');
+            modal.innerHTML = `
+                <img src="/pwa/icons/icon-192.png" style="width:72px;height:72px;border-radius:18px;box-shadow:0 4px 20px rgba(68,138,255,0.4)" alt="">
+                <h2 style="color:#fff;font-size:1.3rem;font-weight:900;text-align:center">Install AZ Learner 🎓</h2>
+                <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;text-align:center;max-width:280px">
+                    Add this app to your iPhone home screen for a full-screen, app-like experience.
+                </p>
+                <div style="background:#1e293b;border-radius:16px;padding:20px;width:100%;max-width:320px;display:flex;flex-direction:column;gap:16px">
+                    <div style="display:flex;align-items:center;gap:14px">
+                        <div style="width:36px;height:36px;border-radius:50%;background:#448AFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900">1</div>
+                        <div style="color:#fff;font-size:0.85rem">
+                            Tap the <strong style="color:#448AFF">Share</strong> button
+                            <i class="fa-solid fa-arrow-up-from-bracket" style="color:#448AFF;margin-left:4px"></i>
+                            at the bottom of Safari.
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:14px">
+                        <div style="width:36px;height:36px;border-radius:50%;background:#448AFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900">2</div>
+                        <div style="color:#fff;font-size:0.85rem">
+                            Scroll down and tap <strong style="color:#448AFF">Add to Home Screen</strong>
+                            <i class="fa-solid fa-plus-square" style="color:#448AFF;margin-left:4px"></i>.
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:14px">
+                        <div style="width:36px;height:36px;border-radius:50%;background:#448AFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900">3</div>
+                        <div style="color:#fff;font-size:0.85rem">
+                            Tap <strong style="color:#448AFF">Add</strong> in the top-right corner.
+                        </div>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('ios-install-modal').classList.add('hidden')"
+                    style="background:#448AFF;color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:0.95rem;font-weight:700;cursor:pointer;width:100%;max-width:320px">
+                    Got it!
+                </button>
+                <button onclick="pwaInstall.dismissBanner(true);document.getElementById('ios-install-modal').classList.add('hidden')"
+                    style="background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:0.8rem;cursor:pointer;padding:4px">
+                    Don't show again
+                </button>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // ── Public API ──
+        return {
+            init() {
+                // Don't show if already installed as standalone
+                if (isStandalone()) return;
+
+                // ── iOS Safari path ──
+                if (isIOS() && isSafari()) {
+                    if (!isDismissed(DISMISSED_IOS_KEY)) {
+                        // Delay slightly so the page renders first
+                        setTimeout(() => showBanner(true), BANNER_DELAY_MS);
+                    }
+                    // Show install option in Settings regardless
+                    const row = document.getElementById('settings-install-row');
+                    if (row) {
+                        row.classList.remove('hidden');
+                        const btn = document.getElementById('settings-install-btn');
+                        if (btn) {
+                            btn.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i> How to Install';
+                            btn.onclick = showIosModal;
+                        }
+                        const desc = document.getElementById('settings-install-desc');
+                        if (desc) desc.textContent = 'Follow the steps to add to home screen.';
+                    }
+                    return;
+                }
+
+                // ── Android / Chrome path ──
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    if (!isDismissed(DISMISSED_KEY)) {
+                        setTimeout(() => showBanner(false), BANNER_DELAY_MS);
+                    }
+                    // Always show install option in Settings
+                    const row = document.getElementById('settings-install-row');
+                    if (row) row.classList.remove('hidden');
+                });
+
+                window.addEventListener('appinstalled', () => {
+                    deferredPrompt = null;
+                    hideBanner();
+                    const row = document.getElementById('settings-install-row');
+                    if (row) row.classList.add('hidden');
+                    console.log('[PWA] App installed successfully.');
+                });
+            },
+
+            async triggerInstall() {
+                if (isIOS() && isSafari()) {
+                    showIosModal();
+                    return;
+                }
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('[PWA] Install outcome:', outcome);
+                deferredPrompt = null;
+                hideBanner();
+                if (outcome === 'accepted') {
+                    const row = document.getElementById('settings-install-row');
+                    if (row) row.classList.add('hidden');
+                }
+            },
+
+            dismissBanner(permanent) {
+                hideBanner();
+                if (permanent) {
+                    markDismissed(isIOS() ? DISMISSED_IOS_KEY : DISMISSED_KEY);
+                } else {
+                    // Temporary dismiss for this session
+                    try { sessionStorage.setItem('az_banner_session_dismissed', '1'); } catch {}
+                }
+            }
+        };
+    })();
+
+    // Initialize after DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => pwaInstall.init());
+    } else {
+        pwaInstall.init();
+    }
     </script>
 </body>
 </html>
