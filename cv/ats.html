@@ -365,7 +365,7 @@
         let icon = 'info';
         let txt;
         if (total > 1) {
-            txt = `${total} ${total === 1 ? 'analysis' : 'analyses'} remaining`;
+            txt = `${total} analyses remaining`;
         } else if (total === 1) {
             cls += ' low';
             icon = 'warning';
@@ -636,7 +636,6 @@ ${cvText.slice(0, 8000)}
         document.getElementById('upload-section').classList.remove('hidden');
 
         if (!hasTriesLeft()) {
-            document.getElementById('analyse-btn').textContent = '';
             document.getElementById('analyse-btn').innerHTML =
                 '<span class="material-symbols-outlined text-sm">lock</span> Unlock Analysis – GHS 5';
         }
