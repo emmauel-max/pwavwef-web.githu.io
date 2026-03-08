@@ -249,7 +249,7 @@
 <div class="glow-overlay"></div>
 
 <!-- Background audio -->
-<audio id="bgAudio" src="learn-your-way.mp3" preload="auto"></audio>
+<audio id="bgAudio" src="learn-your-way.wav" preload="auto"></audio>
 
 <!-- AZ Learner logo watermark -->
 <div class="logo-watermark" id="logoWatermark">
@@ -574,12 +574,14 @@
         animStarted = true;
       }
       track.style.animationPlayState = 'running';
-      audio.play().catch(() => {
-        /* Audio unavailable – reset button so the user can retry.
-           Do NOT pause the animation; the lyrics video keeps scrolling. */
+      audio.play().then(() => {
+        btnPlay.textContent = '⏸ Pause';
+      }).catch(() => {
+        /* Audio unavailable – pause animation and reset so the user can retry. */
+        track.style.animationPlayState = 'paused';
+        animStarted = false;
         btnPlay.textContent = '▶ Play';
       });
-      btnPlay.textContent = '⏸ Pause';
     } else {
       audio.pause();
       track.style.animationPlayState = 'paused';
