@@ -540,7 +540,13 @@
     <header class="bg-white dark:bg-[#303030] shadow-sm flex items-center justify-between px-4 py-3 sticky top-0 z-10">
         <button onclick="history.back()" class="text-gray-500"><i class="fa-solid fa-arrow-left text-xl"></i></button>
         <h1 class="text-xl font-black italic">AZ Blogs ✍️</h1>
-        <button onclick="app.openWriteBlog()" class="bg-black text-white dark:bg-white dark:text-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-pen-nib"></i></button>
+        <div class="flex items-center gap-2">
+            <button onclick="app.showNotifications()" class="relative p-2 text-gray-600 dark:text-gray-400 hover:text-blueAccent transition" title="Blog Notifications">
+                <i class="fa-solid fa-bell text-xl"></i>
+                <span id="blog-bell-badge" class="hidden absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] font-bold min-w-[1rem] h-4 rounded-full flex items-center justify-center px-0.5">0</span>
+            </button>
+            <button onclick="app.openWriteBlog()" class="bg-black text-white dark:bg-white dark:text-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-pen-nib"></i></button>
+        </div>
     </header>
     
     <div id="blogs-feed" class="flex-1 overflow-y-auto p-4 space-y-6 pb-20">
@@ -555,14 +561,42 @@
     </header>
     
     <div class="p-4 flex-1 overflow-y-auto">
-        <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-            <button onclick="app.setBlogFont('font-roboto')" class="px-3 py-1 rounded border dark:border-gray-600 font-roboto text-xs hover:bg-blueAccent hover:text-white">Normal</button>
-            <button onclick="app.setBlogFont('font-playfair')" class="px-3 py-1 rounded border dark:border-gray-600 font-playfair text-xs hover:bg-blueAccent hover:text-white">Fancy</button>
-            <button onclick="app.setBlogFont('font-mono')" class="px-3 py-1 rounded border dark:border-gray-600 font-mono text-xs hover:bg-blueAccent hover:text-white">Code</button>
-            <button onclick="app.setBlogFont('font-dancing')" class="px-3 py-1 rounded border dark:border-gray-600 font-dancing text-xs hover:bg-blueAccent hover:text-white">Script</button>
+        <!-- Font picker -->
+        <div class="flex gap-2 mb-3 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="app.setBlogFont('font-roboto')" class="px-3 py-1 rounded border dark:border-gray-600 font-roboto text-xs hover:bg-blueAccent hover:text-white shrink-0">Normal</button>
+            <button onclick="app.setBlogFont('font-playfair')" class="px-3 py-1 rounded border dark:border-gray-600 font-playfair text-xs hover:bg-blueAccent hover:text-white shrink-0">Fancy</button>
+            <button onclick="app.setBlogFont('font-mono')" class="px-3 py-1 rounded border dark:border-gray-600 font-mono text-xs hover:bg-blueAccent hover:text-white shrink-0">Code</button>
+            <button onclick="app.setBlogFont('font-dancing')" class="px-3 py-1 rounded border dark:border-gray-600 font-dancing text-xs hover:bg-blueAccent hover:text-white shrink-0">Script</button>
         </div>
 
-        <textarea id="blog-input-text" class="w-full h-40 bg-transparent outline-none text-lg resize-none font-roboto" placeholder="What's on your mind?"></textarea>
+        <!-- Formatting toolbar -->
+        <div class="flex items-center gap-1 mb-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl overflow-x-auto no-scrollbar">
+            <button type="button" onclick="app.insertBlogFormat('bold')" title="Bold" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center font-bold text-sm shrink-0"><i class="fa-solid fa-bold"></i></button>
+            <button type="button" onclick="app.insertBlogFormat('italic')" title="Italic" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-sm shrink-0"><i class="fa-solid fa-italic"></i></button>
+            <button type="button" onclick="app.insertBlogFormat('strike')" title="Strikethrough" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-sm shrink-0"><i class="fa-solid fa-strikethrough"></i></button>
+            <button type="button" onclick="app.insertBlogFormat('bullet')" title="Bullet point" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-sm shrink-0"><i class="fa-solid fa-list"></i></button>
+            <button type="button" onclick="app.insertBlogFormat('quote')" title="Quote" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-sm shrink-0"><i class="fa-solid fa-quote-left"></i></button>
+            <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1 shrink-0"></div>
+            <button type="button" onclick="app.insertEmoji('😊')" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-base shrink-0">😊</button>
+            <button type="button" onclick="app.insertEmoji('🔥')" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-base shrink-0">🔥</button>
+            <button type="button" onclick="app.insertEmoji('💡')" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-base shrink-0">💡</button>
+            <button type="button" onclick="app.insertEmoji('🎉')" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-base shrink-0">🎉</button>
+            <button type="button" onclick="app.insertEmoji('💪')" class="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-base shrink-0">💪</button>
+            <span class="ml-auto text-[10px] opacity-40 shrink-0 pr-1" id="blog-char-count">0 / 1000</span>
+        </div>
+
+        <textarea id="blog-input-text" oninput="app.updateBlogCharCount()" class="w-full h-40 bg-transparent outline-none text-lg resize-none font-roboto" placeholder="What's on your mind?" maxlength="1000"></textarea>
+
+        <!-- Upload progress bar -->
+        <div id="blog-upload-progress" class="hidden mb-3">
+            <div class="flex justify-between text-xs opacity-60 mb-1">
+                <span>Uploading video...</span>
+                <span id="blog-upload-percent">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="blog-upload-bar" class="bg-blueAccent h-2 rounded-full transition-all duration-200" style="width:0%"></div>
+            </div>
+        </div>
         
         <div id="blog-media-preview" class="hidden mb-4 relative rounded-xl overflow-hidden bg-black">
             <button onclick="app.clearBlogMedia()" class="absolute top-2 right-2 bg-red-600 text-white w-6 h-6 rounded-full z-10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
@@ -942,7 +976,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getFirestore, collection, collectionGroup, addDoc, deleteDoc, updateDoc, doc, query, where, onSnapshot, setDoc, getDoc, getDocs, orderBy, limit, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, deleteUser, sendPasswordResetEmail, getMultiFactorResolver, PhoneAuthProvider, PhoneMultiFactorGenerator, multiFactor, RecaptchaVerifier, sendEmailVerification, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+        import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyCKpJ7YzuHMTaTC3jXFWiEPmuwdTU4h96Y",
@@ -1034,6 +1068,7 @@
         window.app = {
             data: { 
                 courses: [], assignments: [], notes: [], notifications: [], events: [], user: {}, myTickets: [], blogs: [], currentBlogFont: 'font-roboto', theme: 'main', systemNotifications: false, editingNoteId: null, selectedService: '', readNotifications: [], editingBroadcastId: null, editingCourseId: null, activeMsgCache: {}, recentChats: [], rating: 5, currentAdminView: 'dash', currentHomeView: 'events',
+                blogNotifs: [], readBlogNotifIds: [],
                 badges: ['Certified Champion 🏆', 'Academic Weapon ⚔️', 'Main Character ✨', 'Future CEO 💼', 'Campus Legend 🚀', 'Vibe Curator 🌊', 'Top G Scholar 🧠'],
                 currentTabIndex: 0, lbMode: 'program'
             },
@@ -1127,6 +1162,8 @@
                         }
                         const read = localStorage.getItem('az_read_notifs');
                         if(read) this.data.readNotifications = JSON.parse(read);
+                        const readBlog = localStorage.getItem('az_read_blog_notifs');
+                        if(readBlog) this.data.readBlogNotifIds = JSON.parse(readBlog);
                         this.startListeners();
                         this.startAlertSystem();
                         this.setupSwipeNavigation();
@@ -1370,28 +1407,29 @@
             },
             // FIND THIS AND REPLACE IT
 showNotifications() {
-    // 1. Push History State (So back button works)
     history.pushState({ view: 'notifications' }, null, "");
 
-    // 2. Update Title
     const header = document.querySelector('#modal-notifications h1');
     if(header) header.innerText = "AZ Learner Core 📢";
 
-    // 3. Mark as read logic
     if(this.data.notifications.length > 0) {
        const ids = this.data.notifications.map(n => n.id);
        this.data.readNotifications = [...new Set([...this.data.readNotifications, ...ids])];
        localStorage.setItem('az_read_notifs', JSON.stringify(this.data.readNotifications));
-       try { this.updateBadge(); } catch(e) {} // Extra safety
+       try { this.updateBadge(); } catch(e) {}
     }
 
-    // 4. Render content
+    // Mark blog notifications as read
+    if(this.data.blogNotifs && this.data.blogNotifs.length > 0) {
+        const blogIds = this.data.blogNotifs.map(n => n.id);
+        this.data.readBlogNotifIds = [...new Set([...this.data.readBlogNotifIds, ...blogIds])];
+        localStorage.setItem('az_read_blog_notifs', JSON.stringify(this.data.readBlogNotifIds));
+        try { this.updateBadge(); } catch(e) {}
+    }
+
     this.renderNotifications();
 
-    // 5. SHOW THE SCREEN (Directly, NOT via openModal)
     document.getElementById('modal-notifications').classList.remove('hidden');
-    
-    // CRITICAL: Ensure the black overlay is HIDDEN so you can click buttons
     document.getElementById('modal-overlay').classList.add('hidden');
 },
             viewImage(src) { 
@@ -1573,7 +1611,10 @@ showNotifications() {
     this.startBlogListener(); 
 },
 
-openWriteBlog() { document.getElementById('modal-write-blog').classList.remove('hidden'); },
+openWriteBlog() {
+    document.getElementById('modal-write-blog').classList.remove('hidden');
+    this.updateBlogCharCount();
+},
 
 setBlogFont(fontClass) {
     this.data.currentBlogFont = fontClass;
@@ -1601,6 +1642,47 @@ async handleBlogMedia(input) {
 clearBlogMedia() {
     document.getElementById('blog-media-input').value = '';
     document.getElementById('blog-media-preview').classList.add('hidden');
+},
+
+formatBlogText(text) {
+    let safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    safe = safe.replace(/\*\*(.+?)\*\*/gs, '<strong>$1</strong>');
+    safe = safe.replace(/_(.+?)_/gs, '<em>$1</em>');
+    safe = safe.replace(/~~(.+?)~~/gs, '<del>$1</del>');
+    return safe;
+},
+
+insertBlogFormat(type) {
+    const ta = document.getElementById('blog-input-text');
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const selected = ta.value.substring(start, end) || 'text';
+    let before = '', after = '', insert = '';
+    if (type === 'bold')   { before = '**'; after = '**'; insert = before + selected + after; }
+    else if (type === 'italic') { before = '_'; after = '_'; insert = before + selected + after; }
+    else if (type === 'strike') { before = '~~'; after = '~~'; insert = before + selected + after; }
+    else if (type === 'bullet') { before = '• '; after = ''; insert = '\n' + before + selected; }
+    else if (type === 'quote')  { before = '❝ '; after = ' ❞'; insert = before + selected + after; }
+    ta.value = ta.value.substring(0, start) + insert + ta.value.substring(end);
+    ta.focus();
+    ta.selectionStart = start + before.length;
+    ta.selectionEnd = start + before.length + selected.length;
+    this.updateBlogCharCount();
+},
+
+insertEmoji(emoji) {
+    const ta = document.getElementById('blog-input-text');
+    const pos = ta.selectionStart;
+    ta.value = ta.value.substring(0, pos) + emoji + ta.value.substring(pos);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = pos + emoji.length;
+    this.updateBlogCharCount();
+},
+
+updateBlogCharCount() {
+    const ta = document.getElementById('blog-input-text');
+    const counter = document.getElementById('blog-char-count');
+    if (counter && ta) counter.textContent = `${ta.value.length} / 1000`;
 },
 
             // Toggles the visibility of the specific blog post menu
@@ -1675,52 +1757,58 @@ async saveBlog() {
     const text = document.getElementById('blog-input-text').value;
     const fileInput = document.getElementById('blog-media-input');
     
-    // Safety check for user name
     const userName = (this.data.user && this.data.user.name) ? this.data.user.name : "Anonymous Student";
     const userPic = (this.data.user && this.data.user.profilePic) ? this.data.user.profilePic : null;
 
     if (!text && fileInput.files.length === 0) return alert("Write something!");
 
-    // UI Loading State
     const postBtn = document.querySelector('#modal-write-blog header button:last-child');
     const originalText = postBtn.innerText;
     postBtn.innerText = "Posting...";
     postBtn.disabled = true;
 
-    let mediaData = null; // This will be the URL
+    let mediaData = null;
     let mediaType = 'text';
 
     try {
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            
-            // 1. Handle VIDEO (Upload to Storage)
+
             if (file.type.startsWith('video')) {
                 mediaType = 'video';
-                if (file.size > 50 * 1024 * 1024) throw new Error("Video too large! Max 50MB.");
-                
-                // Upload to Firebase Storage
-                const storageRef = ref(storage, `blog_uploads/${currentUser.uid}/${Date.now()}_${file.name}`);
-                const snapshot = await uploadBytes(storageRef, file);
-                mediaData = await getDownloadURL(snapshot.ref);
-            } 
-            // 2. Handle IMAGE (Compress & Upload)
-            else if (file.type.startsWith('image')) {
+                if (file.size > 100 * 1024 * 1024) throw new Error("Video too large! Max 100MB.");
+
+                const progressWrap = document.getElementById('blog-upload-progress');
+                const bar = document.getElementById('blog-upload-bar');
+                const pct = document.getElementById('blog-upload-percent');
+                progressWrap.classList.remove('hidden');
+
+                mediaData = await new Promise((resolve, reject) => {
+                    const storageRef = ref(storage, `blog_uploads/${currentUser.uid}/${Date.now()}_${file.name}`);
+                    const task = uploadBytesResumable(storageRef, file);
+                    task.on('state_changed',
+                        (snap) => {
+                            const p = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                            bar.style.width = p + '%';
+                            pct.textContent = p + '%';
+                        },
+                        reject,
+                        async () => { resolve(await getDownloadURL(task.snapshot.ref)); }
+                    );
+                });
+
+                progressWrap.classList.add('hidden');
+
+            } else if (file.type.startsWith('image')) {
                 mediaType = 'image';
-                // Compress logic (keeping your existing helper)
                 const compressedBase64 = await this.compressImage(file);
-                
-                // Upload compressed image to Storage (Better than Firestore Base64)
-                // Convert Base64 back to Blob for upload
                 const res = await fetch(compressedBase64);
                 const blob = await res.blob();
-                
                 const storageRef = ref(storage, `blog_uploads/${currentUser.uid}/${Date.now()}_img.jpg`);
                 const snapshot = await uploadBytes(storageRef, blob);
                 mediaData = await getDownloadURL(snapshot.ref);
             }
         } else {
-            // Keep existing media if editing and no new file selected
             if (this.data.editingBlogId && this.data.activeBlogMedia) {
                 mediaData = this.data.activeBlogMedia.data;
                 mediaType = this.data.activeBlogMedia.type;
@@ -1739,26 +1827,25 @@ async saveBlog() {
         };
 
         if (this.data.editingBlogId) {
-            // --- UPDATE EXISTING POST ---
             await updateDoc(doc(db, "blogs", this.data.editingBlogId), blogData);
             this.addXp(5, "Edited Post ✏️");
         } else {
-            // --- CREATE NEW POST ---
             blogData.likes = [];
             blogData.dislikes = [];
             blogData.reposts = 0;
+            blogData.commentCount = 0;
             await addDoc(collection(db, "blogs"), blogData);
             this.addXp(20, "Posted a Blog ✍️");
         }
 
-        // Cleanup
         document.getElementById('modal-write-blog').classList.add('hidden');
         document.getElementById('blog-input-text').value = '';
         this.clearBlogMedia();
-        this.data.editingBlogId = null; // Reset edit state
+        this.data.editingBlogId = null;
 
     } catch (e) {
         console.error(e);
+        document.getElementById('blog-upload-progress').classList.add('hidden');
         alert("Error posting: " + e.message);
     } finally {
         postBtn.innerText = originalText;
@@ -1852,7 +1939,7 @@ startBlogListener() {
                     </div>
                 </div>
                 
-                <div class="${b.font || 'font-sans'} text-base leading-relaxed whitespace-pre-wrap dark:text-gray-200">${safeText}</div>
+                <div class="${b.font || 'font-sans'} text-base leading-relaxed whitespace-pre-wrap dark:text-gray-200">${this.formatBlogText(safeText)}</div>
                 ${mediaHtml}
                 
                 <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
@@ -1868,6 +1955,7 @@ startBlogListener() {
 
                         <button onclick="app.openComments('${id}')" class="flex items-center gap-1 text-sm text-gray-500 hover:text-blueAccent">
                             <i class="fa-regular fa-comment"></i>
+                            ${b.commentCount > 0 ? `<span class="text-xs">${b.commentCount}</span>` : ''}
                         </button>
                     </div>
 
@@ -1887,33 +1975,41 @@ async toggleReaction(blogId, type) {
     if (!currentUser) return alert("Login needed!");
     
     const blogRef = doc(db, "blogs", blogId);
-    // Optimistic UI updates happen via the listener automatically
-    
+
     try {
         if (type === 'like') {
             const docSnap = await getDoc(blogRef);
             const likes = docSnap.data().likes || [];
             
             if (likes.includes(currentUser.uid)) {
-                // Unlike
                 await updateDoc(blogRef, { likes: arrayRemove(currentUser.uid) });
             } else {
-                // Like (and remove dislike if exists)
                 await updateDoc(blogRef, { 
                     likes: arrayUnion(currentUser.uid),
                     dislikes: arrayRemove(currentUser.uid) 
                 });
                 this.addXp(5, "Liked a Post ❤️");
+                const ownerId = docSnap.data().userId;
+                if (ownerId && ownerId !== currentUser.uid) {
+                    const senderName = this.data.user.name || 'Someone';
+                    await addDoc(collection(db, "user_notifications"), {
+                        toUserId: ownerId,
+                        type: 'like',
+                        fromUserName: senderName,
+                        blogId: blogId,
+                        blogSnippet: (docSnap.data().text || '').substring(0, 60),
+                        timestamp: Date.now(),
+                        read: false
+                    });
+                }
             }
         } else if (type === 'dislike') {
             const docSnap = await getDoc(blogRef);
             const dislikes = docSnap.data().dislikes || [];
             
             if (dislikes.includes(currentUser.uid)) {
-                // Remove Dislike
                 await updateDoc(blogRef, { dislikes: arrayRemove(currentUser.uid) });
             } else {
-                // Dislike (and remove like if exists)
                 await updateDoc(blogRef, { 
                     dislikes: arrayUnion(currentUser.uid),
                     likes: arrayRemove(currentUser.uid)
@@ -1972,50 +2068,6 @@ shareBlog(authorName, text) {
     }
 },
             // --- FIX FOR UNDEFINED BLOGS ---
-async saveBlog() {
-    const text = document.getElementById('blog-input-text').value;
-    const fileInput = document.getElementById('blog-media-input');
-    
-    // Safety check for user name
-    const userName = (this.data.user && this.data.user.name) ? this.data.user.name : "Anonymous Student";
-    const userPic = (this.data.user && this.data.user.profilePic) ? this.data.user.profilePic : null;
-
-    if (!text && fileInput.files.length === 0) return alert("Write something!");
-
-    let mediaData = null;
-    let mediaType = 'text';
-
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        mediaType = file.type.startsWith('video') ? 'video' : 'image';
-        if (mediaType === 'image') {
-            mediaData = await this.compressImage(file);
-        } else {
-            // Read video as DataURL
-            mediaData = await new Promise(r => {
-                const reader = new FileReader();
-                reader.onload = e => r(e.target.result);
-                reader.readAsDataURL(file);
-            });
-        }
-    }
-
-    await addDoc(collection(db, "blogs"), {
-        userId: currentUser.uid,
-        userName: userName,
-        userPic: userPic,
-        text: text,
-        font: this.data.currentBlogFont || 'font-roboto',
-        mediaData: mediaData,
-        mediaType: mediaType,
-        timestamp: Date.now()
-    });
-
-    document.getElementById('modal-write-blog').classList.add('hidden');
-    document.getElementById('blog-input-text').value = '';
-    this.clearBlogMedia();
-    this.addXp(20, "Posted a Blog ✍️");
-},
 
 // --- COMMENT LOGIC ---
 openComments(blogId) {
@@ -2067,9 +2119,30 @@ async postComment() {
         text: text,
         timestamp: Date.now()
     });
+
+    // Increment comment count and notify blog owner
+    try {
+        const blogRef = doc(db, "blogs", this.data.activeBlogId);
+        const blogSnap = await getDoc(blogRef);
+        if (blogSnap.exists()) {
+            await updateDoc(blogRef, { commentCount: increment(1) });
+            const ownerId = blogSnap.data().userId;
+            if (ownerId && ownerId !== currentUser.uid) {
+                await addDoc(collection(db, "user_notifications"), {
+                    toUserId: ownerId,
+                    type: 'comment',
+                    fromUserName: userName,
+                    blogId: this.data.activeBlogId,
+                    blogSnippet: (blogSnap.data().text || '').substring(0, 60),
+                    commentText: text.substring(0, 80),
+                    timestamp: Date.now(),
+                    read: false
+                });
+            }
+        }
+    } catch(e) { console.error("Comment notify error", e); }
     
     input.value = '';
-    // Optional: Add tiny XP for engagement
     this.addXp(5, "Commented 💬");
 },
         // --- ADD THIS NEW FUNCTION TO window.app ---
@@ -2924,17 +2997,19 @@ if (msg.fileData) {
 
             // FIND THIS AND REPLACE IT
 updateBadge() {
-    const unreadCount = this.data.notifications.filter(n => !this.data.readNotifications.includes(n.id)).length;
-    const badge = document.getElementById('notification-badge');
-    
-    // SAFETY CHECK: If the badge doesn't exist in HTML, stop here to prevent crash
-    if (!badge) return; 
+    const unreadBroadcast = this.data.notifications.filter(n => !this.data.readNotifications.includes(n.id)).length;
+    const unreadBlog = (this.data.blogNotifs || []).filter(n => !this.data.readBlogNotifIds.includes(n.id)).length;
+    const total = unreadBroadcast + unreadBlog;
 
-    if(unreadCount > 0) { 
-        badge.classList.remove('hidden'); 
-        badge.innerText = unreadCount; 
-    } else { 
-        badge.classList.add('hidden'); 
+    const badge = document.getElementById('notification-badge');
+    if (!badge) return;
+    if(total > 0) { badge.classList.remove('hidden'); badge.innerText = total; }
+    else { badge.classList.add('hidden'); }
+
+    const bellBadge = document.getElementById('blog-bell-badge');
+    if (bellBadge) {
+        if(unreadBlog > 0) { bellBadge.classList.remove('hidden'); bellBadge.innerText = unreadBlog; }
+        else { bellBadge.classList.add('hidden'); }
     }
 },
             showInAppMessage(d) {
@@ -3149,6 +3224,33 @@ listeners.push(onSnapshot(qEvents, (snap) => {
                     if (!searchInput.value.trim()) {
                         this.renderChatList();
                     }
+                }));
+
+                // User blog activity notifications (likes / comments on own posts)
+                const qUserNotifs = query(
+                    collection(db, "user_notifications"),
+                    where("toUserId", "==", currentUser.uid),
+                    orderBy("timestamp", "desc"),
+                    limit(30)
+                );
+                listeners.push(onSnapshot(qUserNotifs, (snap) => {
+                    snap.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const d = change.doc.data();
+                            // Only alert if notification is fresh (< 20s) to avoid spam on reload
+                            if (Date.now() - d.timestamp < 20000) {
+                                const msg = d.type === 'like'
+                                    ? `${d.fromUserName} liked your post ❤️`
+                                    : `${d.fromUserName} commented: "${d.commentText || ''}"`;
+                                this.sendSystemNotification("Blog Activity 📝", msg);
+                            }
+                        }
+                    });
+                    const notifs = [];
+                    snap.forEach(d => notifs.push({id: d.id, ...d.data()}));
+                    this.data.blogNotifs = notifs;
+                    this.renderNotifications();
+                    this.updateBadge();
                 }));
             },
 
@@ -3366,20 +3468,49 @@ document.getElementById('admin-team-list').innerHTML = adminHtml || '<tr><td col
             
             renderNotifications() {
                 const list = document.getElementById('notifications-list'); list.innerHTML = '';
-                if(this.data.notifications.length === 0) { document.getElementById('empty-notifications').classList.remove('hidden'); return; }
+                const hasBroadcast = this.data.notifications.length > 0;
+                const hasBlogNotifs = this.data.blogNotifs && this.data.blogNotifs.length > 0;
+
+                if(!hasBroadcast && !hasBlogNotifs) {
+                    document.getElementById('empty-notifications').classList.remove('hidden');
+                    return;
+                }
                 document.getElementById('empty-notifications').classList.add('hidden');
-                this.data.notifications.forEach(n => {
-                   let imgHtml = n.image ? `<img src="${n.image}" onclick="app.viewImage(this.src)" class="w-full h-32 object-cover rounded mt-2 cursor-pointer hover:opacity-90">` : '';
-                    let cardClass = "bg-white dark:bg-darkCard";
-                    let titleClass = "text-blueAccent";
-                    let border = "";
-                    if(n.isVIP) {
-                        cardClass = "vip-gradient text-black";
-                        titleClass = "text-black";
-                        border = "border-2 border-yellow-300";
-                    }
-                    list.innerHTML += `<div class="${cardClass} p-4 rounded-xl shadow mb-2 relative ${border}"><h3 class="font-bold ${titleClass}">${n.title} ${n.isVIP ? '👑' : ''}</h3><p class="text-sm opacity-80">${n.body}</p>${imgHtml}<p class="text-[10px] opacity-40 mt-1">${new Date(n.timestamp).toLocaleDateString()}</p></div>`;
-                });
+
+                if (hasBlogNotifs) {
+                    list.innerHTML += `<p class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2 mt-1">Blog Activity</p>`;
+                    this.data.blogNotifs.forEach(n => {
+                        const isUnread = !this.data.readBlogNotifIds.includes(n.id);
+                        const icon = n.type === 'like' ? '❤️' : '💬';
+                        const title = n.type === 'like'
+                            ? `${n.fromUserName} liked your post ${icon}`
+                            : `${n.fromUserName} commented on your post ${icon}`;
+                        const body = n.type === 'comment' ? `"${n.commentText || ''}"` : (n.blogSnippet ? `"${n.blogSnippet}..."` : '');
+                        const unreadDot = isUnread ? `<span class="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full"></span>` : '';
+                        list.innerHTML += `<div class="bg-pink-50 dark:bg-pink-900/20 border border-pink-100 dark:border-pink-800 p-3 rounded-xl mb-2 relative" onclick="app.openBlogs()">
+                            ${unreadDot}
+                            <p class="font-bold text-sm text-pink-700 dark:text-pink-300">${title}</p>
+                            ${body ? `<p class="text-xs opacity-70 mt-0.5 truncate">${body}</p>` : ''}
+                            <p class="text-[10px] opacity-40 mt-1">${new Date(n.timestamp).toLocaleDateString()}</p>
+                        </div>`;
+                    });
+                }
+
+                if (hasBroadcast) {
+                    if (hasBlogNotifs) list.innerHTML += `<p class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2 mt-3">Announcements</p>`;
+                    this.data.notifications.forEach(n => {
+                       let imgHtml = n.image ? `<img src="${n.image}" onclick="app.viewImage(this.src)" class="w-full h-32 object-cover rounded mt-2 cursor-pointer hover:opacity-90">` : '';
+                        let cardClass = "bg-white dark:bg-darkCard";
+                        let titleClass = "text-blueAccent";
+                        let border = "";
+                        if(n.isVIP) {
+                            cardClass = "vip-gradient text-black";
+                            titleClass = "text-black";
+                            border = "border-2 border-yellow-300";
+                        }
+                        list.innerHTML += `<div class="${cardClass} p-4 rounded-xl shadow mb-2 relative ${border}"><h3 class="font-bold ${titleClass}">${n.title} ${n.isVIP ? '👑' : ''}</h3><p class="text-sm opacity-80">${n.body}</p>${imgHtml}<p class="text-[10px] opacity-40 mt-1">${new Date(n.timestamp).toLocaleDateString()}</p></div>`;
+                    });
+                }
             },
 
             switchTab(index, fromHistory = false) { 
