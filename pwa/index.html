@@ -46,7 +46,10 @@
                     colors: {
                         blueAccent: '#448AFF', orangeAccent: '#FFAB40', darkBg: '#212121', darkCard: '#424242', lightBg: '#FAFAFA', noteYellow: '#FFF9C4',
                         chatUser: '#E3F2FD', chatAdmin: '#F1F8E9', darkChatUser: '#1E293B', darkChatAdmin: '#3F3F46',
-                        mainBg: '#0f172a', mainCard: '#1e293b'
+                        mainBg: '#0f172a', mainCard: '#1e293b',
+                        oceanBg: '#0a1929', oceanCard: '#0d2744',
+                        forestBg: '#0a1a0a', forestCard: '#1a2e1a',
+                        sunsetBg: '#1a0a2e', sunsetCard: '#2d1b4e'
                     }
                 }
             }
@@ -144,6 +147,54 @@
 }
 .dark.main-theme .ticket-stub {
     background-image: radial-gradient(circle at 0 50%, transparent 10px, #1e293b 11px);
+}
+
+/* === OCEAN THEME (Deep Cyan) === */
+.dark.ocean-theme body,
+.dark.ocean-theme .dark\:bg-darkBg,
+.dark.ocean-theme .bg-darkBg {
+    background-color: #0a1929 !important;
+}
+.dark.ocean-theme .dark\:bg-darkCard {
+    background-color: #0d2744 !important;
+}
+.dark.ocean-theme .dark\:bg-\[\#303030\] {
+    background-color: #0d2744 !important;
+}
+.dark.ocean-theme .ticket-stub {
+    background-image: radial-gradient(circle at 0 50%, transparent 10px, #0d2744 11px);
+}
+
+/* === FOREST THEME (Deep Green) === */
+.dark.forest-theme body,
+.dark.forest-theme .dark\:bg-darkBg,
+.dark.forest-theme .bg-darkBg {
+    background-color: #0a1a0a !important;
+}
+.dark.forest-theme .dark\:bg-darkCard {
+    background-color: #1a2e1a !important;
+}
+.dark.forest-theme .dark\:bg-\[\#303030\] {
+    background-color: #1a2e1a !important;
+}
+.dark.forest-theme .ticket-stub {
+    background-image: radial-gradient(circle at 0 50%, transparent 10px, #1a2e1a 11px);
+}
+
+/* === SUNSET THEME (Deep Purple) === */
+.dark.sunset-theme body,
+.dark.sunset-theme .dark\:bg-darkBg,
+.dark.sunset-theme .bg-darkBg {
+    background-color: #1a0a2e !important;
+}
+.dark.sunset-theme .dark\:bg-darkCard {
+    background-color: #2d1b4e !important;
+}
+.dark.sunset-theme .dark\:bg-\[\#303030\] {
+    background-color: #2d1b4e !important;
+}
+.dark.sunset-theme .ticket-stub {
+    background-image: radial-gradient(circle at 0 50%, transparent 10px, #2d1b4e 11px);
 }
 
 /* === SPLASH SCREEN === */
@@ -527,6 +578,11 @@
                         <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-2"><i class="fa-solid fa-briefcase text-green-500 text-lg"></i></div>
                         <h3 class="font-bold text-sm">CV Builder</h3>
                         <p class="text-[10px] opacity-60">Create or test your CV</p>
+                    </div>
+                    <div onclick="app.openAzAI()" class="bg-gradient-to-br from-violet-50 to-indigo-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 transition-transform shadow-sm h-32 col-span-2">
+                        <div class="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center mb-2"><i class="fa-solid fa-robot text-violet-500 text-lg"></i></div>
+                        <h3 class="font-bold text-violet-700 dark:text-violet-300 text-sm">AZ AI 🤖</h3>
+                        <p class="text-[10px] opacity-60">Your AI study buddy — powered by Vertex AI</p>
                     </div>
                 </div>
             </div>
@@ -947,6 +1003,17 @@
                             <i class="fa-solid fa-moon text-base"></i>Dark
                         </button>
                     </div>
+                    <div class="flex gap-2 mt-2" role="radiogroup" aria-label="Extra theme selection">
+                        <button onclick="app.setTheme('ocean')" id="theme-btn-ocean" role="radio" aria-checked="false" aria-label="Select ocean theme" class="flex-1 py-3 rounded-xl text-xs font-bold border-2 transition-all flex flex-col items-center gap-1">
+                            <i class="fa-solid fa-water text-base"></i>Ocean
+                        </button>
+                        <button onclick="app.setTheme('forest')" id="theme-btn-forest" role="radio" aria-checked="false" aria-label="Select forest theme" class="flex-1 py-3 rounded-xl text-xs font-bold border-2 transition-all flex flex-col items-center gap-1">
+                            <i class="fa-solid fa-tree text-base"></i>Forest
+                        </button>
+                        <button onclick="app.setTheme('sunset')" id="theme-btn-sunset" role="radio" aria-checked="false" aria-label="Select sunset theme" class="flex-1 py-3 rounded-xl text-xs font-bold border-2 transition-all flex flex-col items-center gap-1">
+                            <i class="fa-solid fa-fire text-base"></i>Sunset
+                        </button>
+                    </div>
                 </div>
                 <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
                     <div><h3 class="font-bold text-lg">Push Notifications</h3><p class="text-xs opacity-60">Get alerts for classes & assignments.</p></div>
@@ -973,6 +1040,49 @@
             <div class="text-center opacity-40 text-xs mt-10">
                 <p>AZ Learner v2.2</p>
                 <p>Built for the Squad 🇬🇭</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- === AZ AI STUDY BUDDY MODAL === -->
+    <div id="full-screen-azai" class="fixed inset-0 z-[55] bg-lightBg dark:bg-darkBg flex flex-col hidden">
+        <header class="bg-white dark:bg-[#303030] shadow-sm flex items-center px-4 py-3 sticky top-0 z-10 shrink-0">
+            <button onclick="history.back()" class="text-gray-500 mr-4"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+            <div class="flex items-center gap-2 flex-1">
+                <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight">AZ AI</h1>
+                    <p class="text-[10px] opacity-50 leading-tight">Powered by Vertex AI</p>
+                </div>
+            </div>
+            <button onclick="app.clearAzAIChat()" class="text-gray-400 text-sm p-2" title="Clear chat"><i class="fa-solid fa-broom"></i></button>
+        </header>
+
+        <!-- Chat Messages -->
+        <div id="azai-messages" class="flex-1 overflow-y-auto p-4 space-y-3">
+            <div class="flex gap-3 items-start">
+                <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                    <p class="text-sm" id="azai-welcome-msg">Hey! I'm AZ AI, your personal study buddy 🎓. Ask me anything — explain concepts, quiz yourself, summarise notes, or just think out loud. I've got you! ✨</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestion Chips -->
+        <div id="azai-chips" class="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+            <button onclick="app.sendAzAIMessage('Explain this concept to me like I\'m 5: ')" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">🧠 Explain a concept</button>
+            <button onclick="app.sendAzAIMessage('Quiz me on: ')" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">📝 Quiz me</button>
+            <button onclick="app.sendAzAIMessage('Summarize this for me: ')" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">📄 Summarize</button>
+            <button onclick="app.sendAzAIMessage('Help me with my assignment on: ')" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">📚 Assignment help</button>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 bg-white dark:bg-[#303030] border-t border-gray-100 dark:border-gray-700 shrink-0 pb-safe">
+            <div class="flex gap-2 items-end">
+                <textarea id="azai-input" rows="1" placeholder="Ask anything..." class="flex-1 bg-gray-100 dark:bg-gray-700 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-400 resize-none max-h-32 overflow-y-auto" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();app.sendAzAIMessage();}"></textarea>
+                <button onclick="app.sendAzAIMessage()" class="w-11 h-11 bg-violet-500 hover:bg-violet-600 text-white rounded-2xl flex items-center justify-center shrink-0 transition-colors active:scale-95">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -1398,6 +1508,7 @@
         'modal-blog-comments',    // Top priority (on top of blogs)
         'full-screen-feedback',   
         'full-screen-chat',       
+        'full-screen-azai',
         'modal-write-blog',
         'full-screen-profile',    
         'full-screen-settings',   
@@ -1672,6 +1783,110 @@ showNotifications() {
             closeCvOptions() {
                 document.getElementById('modal-cv-options').classList.add('hidden');
             },
+
+            // --- AZ AI STUDY BUDDY ---
+            _azAIModel: null,
+            async _getAzAIModel() {
+                if (this._azAIModel) return this._azAIModel;
+                const { getVertexAI, getGenerativeModel } = await import("https://www.gstatic.com/firebasejs/11.0.2/firebase-vertexai.js");
+                const vertexAI = getVertexAI(appInstance);
+                this._azAIModel = getGenerativeModel(vertexAI, {
+                    model: "gemini-2.0-flash",
+                    systemInstruction: "You are AZ AI, a friendly and knowledgeable study buddy for university students in Ghana using the AZ Learner app. Be concise, encouraging, and use simple language. Keep responses under 300 words unless the student asks for a detailed explanation. Use emojis sparingly."
+                });
+                return this._azAIModel;
+            },
+            _escapeHtml(str) {
+                return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+            },
+            _azAIChat: null,
+            openAzAI() {
+                history.pushState({ view: 'azai' }, null, "");
+                const modal = document.getElementById('full-screen-azai');
+                modal.classList.remove('hidden');
+                const firstName = (this.data.user.name || '').trim().split(/\s+/)[0];
+                const welcomeEl = document.getElementById('azai-welcome-msg');
+                if (firstName && welcomeEl) {
+                    welcomeEl.textContent = `Hey ${firstName}! I'm AZ AI, your personal study buddy 🎓. Ask me anything — explain concepts, quiz yourself, summarize notes, or just think out loud. I've got you! ✨`;
+                }
+                // Reset chat session when reopening
+                this._azAIChat = null;
+            },
+            clearAzAIChat() {
+                this._azAIChat = null;
+                const msgs = document.getElementById('azai-messages');
+                const firstName = (this.data.user.name || '').trim().split(/\s+/)[0];
+                const nameTag = firstName ? ` ${firstName}` : '';
+                msgs.innerHTML = `
+                    <div class="flex gap-3 items-start">
+                        <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                            <p class="text-sm">Hey${nameTag}! I'm AZ AI, your personal study buddy 🎓. Ask me anything — explain concepts, quiz yourself, summarize notes, or just think out loud. I've got you! ✨</p>
+                        </div>
+                    </div>`;
+                document.getElementById('azai-chips').classList.remove('hidden');
+            },
+            async sendAzAIMessage(prefill) {
+                const input = document.getElementById('azai-input');
+                const text = prefill !== undefined ? prefill : (input.value.trim());
+                if (!text) return;
+                input.value = '';
+                input.style.height = 'auto';
+
+                // Hide suggestion chips after first message
+                document.getElementById('azai-chips').classList.add('hidden');
+
+                const msgs = document.getElementById('azai-messages');
+
+                // Append user bubble
+                msgs.innerHTML += `
+                    <div class="flex gap-3 items-start justify-end">
+                        <div class="bg-violet-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm max-w-[85%]">
+                            <p class="text-sm">${this._escapeHtml(text)}</p>
+                        </div>
+                    </div>`;
+
+                // Typing indicator
+                const typingId = 'azai-typing-' + Date.now();
+                msgs.innerHTML += `
+                    <div id="${typingId}" class="flex gap-3 items-start">
+                        <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                            <span class="flex gap-1 items-center"><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:0ms"></span><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:150ms"></span><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:300ms"></span></span>
+                        </div>
+                    </div>`;
+                msgs.scrollTop = msgs.scrollHeight;
+
+                try {
+                    const model = await this._getAzAIModel();
+                    if (!this._azAIChat) {
+                        this._azAIChat = model.startChat({});
+                    }
+                    const result = await this._azAIChat.sendMessage(text);
+                    const reply = result.response.text();
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    msgs.innerHTML += `
+                        <div class="flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                            <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                                <p class="text-sm whitespace-pre-wrap">${this._escapeHtml(reply)}</p>
+                            </div>
+                        </div>`;
+                } catch(e) {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    msgs.innerHTML += `
+                        <div class="flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                            <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                                <p class="text-sm text-red-500">Oops! Something went wrong. Please try again. 😅</p>
+                            </div>
+                        </div>`;
+                    console.error('[AZ AI]', e);
+                }
+                msgs.scrollTop = msgs.scrollHeight;
+            },
             // --- STREAK HISTORY ---
             openStreakHistory() {
                 const list = document.getElementById('streak-history-list');
@@ -1697,7 +1912,9 @@ showNotifications() {
             renderHome() {
                 // Greeting Logic
                 const hour = new Date().getHours();
-                const greeting = hour < 12 ? "Good Morning! ☀️" : hour < 18 ? "Good Afternoon! 🌤️" : "Good Evening! 🌙";
+                const firstName = (this.data.user.name || '').split(' ')[0];
+                const nameTag = firstName ? `, ${firstName}` : '';
+                const greeting = hour < 12 ? `Good Morning${nameTag}! ☀️` : hour < 18 ? `Good Afternoon${nameTag}! 🌤️` : `Good Evening${nameTag}! 🌙`;
                 document.getElementById('home-greeting').innerText = greeting;
 
                 // Streak Display
@@ -3805,16 +4022,24 @@ document.getElementById('admin-team-list').innerHTML = adminHtml || '<tr><td col
             toggleSidebar() { const d = document.getElementById('sidebar-drawer'); const o = document.getElementById('sidebar-overlay'); if(d.classList.contains('-translate-x-full')) { d.classList.remove('-translate-x-full'); o.classList.remove('hidden'); } else { d.classList.add('-translate-x-full'); o.classList.add('hidden'); } },
             setTheme(name) { this.data.theme = name; localStorage.setItem('az_theme', name); this.applyTheme(); },
             toggleTheme() { const next = this.themeOrder[(this.themeOrder.indexOf(this.data.theme) + 1) % this.themeOrder.length]; this.setTheme(next); },
-            themeOrder: ['main', 'light', 'dark'],
+            themeOrder: ['main', 'light', 'dark', 'ocean', 'forest', 'sunset'],
             applyTheme() {
                 const theme = this.data.theme;
                 const root = document.documentElement;
+                const themeClasses = ['main-theme', 'ocean-theme', 'forest-theme', 'sunset-theme'];
+                themeClasses.forEach(c => root.classList.remove(c));
                 if (theme === 'dark') {
-                    root.classList.add('dark'); root.classList.remove('main-theme');
+                    root.classList.add('dark');
                 } else if (theme === 'main') {
                     root.classList.add('dark'); root.classList.add('main-theme');
+                } else if (theme === 'ocean') {
+                    root.classList.add('dark'); root.classList.add('ocean-theme');
+                } else if (theme === 'forest') {
+                    root.classList.add('dark'); root.classList.add('forest-theme');
+                } else if (theme === 'sunset') {
+                    root.classList.add('dark'); root.classList.add('sunset-theme');
                 } else {
-                    root.classList.remove('dark'); root.classList.remove('main-theme');
+                    root.classList.remove('dark');
                 }
                 this.updateThemeButtons();
             },
