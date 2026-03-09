@@ -579,10 +579,15 @@
                         <h3 class="font-bold text-sm">CV Builder</h3>
                         <p class="text-[10px] opacity-60">Create or test your CV</p>
                     </div>
-                    <div onclick="app.openAzAI()" class="bg-gradient-to-br from-violet-50 to-indigo-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 transition-transform shadow-sm h-32 col-span-2">
+                    <div onclick="app.openAzAI()" class="bg-gradient-to-br from-violet-50 to-indigo-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 transition-transform shadow-sm h-32">
                         <div class="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center mb-2"><i class="fa-solid fa-robot text-violet-500 text-lg"></i></div>
                         <h3 class="font-bold text-violet-700 dark:text-violet-300 text-sm">AZ AI 🤖</h3>
-                        <p class="text-[10px] opacity-60">Your AI study buddy — powered by Vertex AI</p>
+                        <p class="text-[10px] opacity-60">Your AI study buddy</p>
+                    </div>
+                    <div onclick="app.openStudyRoom()" class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 transition-transform shadow-sm h-32">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-2"><i class="fa-solid fa-leaf text-emerald-500 text-lg"></i></div>
+                        <h3 class="font-bold text-emerald-700 dark:text-emerald-300 text-sm">Study Room 🍃</h3>
+                        <p class="text-[10px] opacity-60">Pomodoro + lofi radio</p>
                     </div>
                 </div>
             </div>
@@ -1087,6 +1092,213 @@
         </div>
     </div>
 
+    <!-- === STUDY ROOM FULL-SCREEN OVERLAY === -->
+    <div id="full-screen-study-room" class="fixed inset-0 z-[55] bg-gray-950 flex flex-col hidden overflow-y-auto">
+        <header class="bg-gray-900/80 backdrop-blur-md shadow-sm flex items-center px-4 py-3 sticky top-0 z-10 shrink-0 border-b border-gray-800">
+            <button onclick="history.back()" class="text-gray-400 mr-4"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+            <div class="flex items-center gap-2 flex-1">
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center"><i class="fa-solid fa-leaf text-white text-sm"></i></div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight text-white">Study Room</h1>
+                    <p class="text-[10px] opacity-50 leading-tight text-emerald-400">Focus · Flow · Flourish</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 p-4 space-y-5 pb-8">
+
+            <!-- === POMODORO TIMER === -->
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl">
+                <h2 class="text-center text-white font-bold text-sm uppercase tracking-widest opacity-60 mb-4">Pomodoro Timer 🍅</h2>
+
+                <!-- Mode Selector -->
+                <div class="flex gap-2 mb-6 bg-gray-800 p-1 rounded-2xl">
+                    <button id="pomo-btn-work" onclick="app.setPomoMode('work')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white">Focus</button>
+                    <button id="pomo-btn-short" onclick="app.setPomoMode('short')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all text-gray-400">Short Break</button>
+                    <button id="pomo-btn-long" onclick="app.setPomoMode('long')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all text-gray-400">Long Break</button>
+                </div>
+
+                <!-- Timer Ring -->
+                <div class="flex items-center justify-center mb-6">
+                    <div class="relative w-52 h-52">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="88" fill="none" stroke="#1f2937" stroke-width="12"/>
+                            <circle id="pomo-ring" cx="100" cy="100" r="88" fill="none" stroke="#10b981" stroke-width="12"
+                                stroke-dasharray="553" stroke-dashoffset="0" stroke-linecap="round"
+                                style="transition: stroke-dashoffset 1s linear, stroke 0.3s;"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span id="pomo-display" class="text-5xl font-black text-white tabular-nums">25:00</span>
+                            <span id="pomo-mode-label" class="text-xs text-emerald-400 font-semibold mt-1">FOCUS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Counter -->
+                <div class="flex justify-center gap-2 mb-5">
+                    <span id="pomo-s1" class="w-3 h-3 rounded-full bg-gray-700 border border-gray-600"></span>
+                    <span id="pomo-s2" class="w-3 h-3 rounded-full bg-gray-700 border border-gray-600"></span>
+                    <span id="pomo-s3" class="w-3 h-3 rounded-full bg-gray-700 border border-gray-600"></span>
+                    <span id="pomo-s4" class="w-3 h-3 rounded-full bg-gray-700 border border-gray-600"></span>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex gap-3 justify-center">
+                    <button onclick="app.resetPomo()" class="w-14 h-14 rounded-full bg-gray-800 text-gray-400 flex items-center justify-center border border-gray-700 active:scale-95 transition-transform">
+                        <i class="fa-solid fa-arrow-rotate-left text-lg"></i>
+                    </button>
+                    <button id="pomo-start-btn" onclick="app.togglePomo()" class="w-20 h-20 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-900/50 active:scale-95 transition-transform">
+                        <i id="pomo-play-icon" class="fa-solid fa-play text-2xl ml-1"></i>
+                    </button>
+                    <button onclick="app.skipPomo()" class="w-14 h-14 rounded-full bg-gray-800 text-gray-400 flex items-center justify-center border border-gray-700 active:scale-95 transition-transform">
+                        <i class="fa-solid fa-forward-step text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="mt-5 flex justify-around text-center">
+                    <div><p class="text-2xl font-black text-white" id="pomo-sessions-done">0</p><p class="text-[10px] text-gray-500 uppercase tracking-wide">Sessions</p></div>
+                    <div><p class="text-2xl font-black text-white" id="pomo-total-mins">0</p><p class="text-[10px] text-gray-500 uppercase tracking-wide">Mins focused</p></div>
+                </div>
+            </div>
+
+            <!-- === LOFI RADIO === -->
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-5 shadow-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-white font-bold text-sm uppercase tracking-widest opacity-60">Lofi Radio 🎧</h2>
+                    <div id="lofi-live-dot" class="hidden flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span class="text-[10px] text-red-400 font-bold">LIVE</span>
+                    </div>
+                </div>
+
+                <!-- Station Selector -->
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-4">
+                    <button onclick="app.selectLofiStation(0)" data-station="0" class="lofi-station-btn shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-emerald-600 text-white whitespace-nowrap">🌙 Lofi Beats</button>
+                    <button onclick="app.selectLofiStation(1)" data-station="1" class="lofi-station-btn shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-gray-800 text-gray-400 whitespace-nowrap">☕ Coffee Shop</button>
+                    <button onclick="app.selectLofiStation(2)" data-station="2" class="lofi-station-btn shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-gray-800 text-gray-400 whitespace-nowrap">🌿 Chill Vibes</button>
+                    <button onclick="app.selectLofiStation(3)" data-station="3" class="lofi-station-btn shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-gray-800 text-gray-400 whitespace-nowrap">🌊 Ocean Focus</button>
+                </div>
+
+                <!-- Now Playing Card -->
+                <div class="bg-gray-800 rounded-2xl p-4 flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center shrink-0 shadow-lg" id="lofi-album-art">
+                        <i class="fa-solid fa-music text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white font-bold text-sm truncate" id="lofi-track-name">Lofi Beats Radio</p>
+                        <p class="text-gray-400 text-xs" id="lofi-station-name">🌙 Relaxing Study Music</p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span id="lofi-eq-bar1" class="w-1 bg-emerald-500 rounded-full lofi-eq hidden" style="height:8px"></span>
+                        <span id="lofi-eq-bar2" class="w-1 bg-emerald-500 rounded-full lofi-eq hidden" style="height:14px"></span>
+                        <span id="lofi-eq-bar3" class="w-1 bg-emerald-500 rounded-full lofi-eq hidden" style="height:10px"></span>
+                    </div>
+                </div>
+
+                <!-- Controls Row -->
+                <div class="flex items-center gap-4">
+                    <button onclick="app.toggleLofi()" id="lofi-play-btn" class="w-14 h-14 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform shrink-0">
+                        <i id="lofi-play-icon" class="fa-solid fa-play text-xl ml-0.5"></i>
+                    </button>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs text-gray-500">Volume</span>
+                            <span id="lofi-vol-display" class="text-xs text-emerald-400 font-bold">70%</span>
+                        </div>
+                        <input id="lofi-volume" type="range" min="0" max="100" value="70" class="w-full h-2 rounded-full accent-emerald-500 cursor-pointer" oninput="app.setLofiVolume(this.value)">
+                    </div>
+                </div>
+
+                <!-- Hidden audio element -->
+                <audio id="lofi-audio" crossorigin="anonymous" preload="none"></audio>
+            </div>
+
+            <!-- === AMBIENT SOUNDS === -->
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-5 shadow-2xl">
+                <h2 class="text-white font-bold text-sm uppercase tracking-widest opacity-60 mb-4">Ambient Sounds 🌧️</h2>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="app.toggleAmbient('rain')" id="amb-rain" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">🌧️</span><span class="text-[10px] text-gray-400 font-semibold">Rain</span>
+                    </button>
+                    <button onclick="app.toggleAmbient('fire')" id="amb-fire" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">🔥</span><span class="text-[10px] text-gray-400 font-semibold">Fireplace</span>
+                    </button>
+                    <button onclick="app.toggleAmbient('cafe')" id="amb-cafe" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">☕</span><span class="text-[10px] text-gray-400 font-semibold">Café</span>
+                    </button>
+                    <button onclick="app.toggleAmbient('forest')" id="amb-forest" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">🌲</span><span class="text-[10px] text-gray-400 font-semibold">Forest</span>
+                    </button>
+                    <button onclick="app.toggleAmbient('waves')" id="amb-waves" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">🌊</span><span class="text-[10px] text-gray-400 font-semibold">Waves</span>
+                    </button>
+                    <button onclick="app.toggleAmbient('white')" id="amb-white" class="ambient-btn flex flex-col items-center justify-center bg-gray-800 rounded-2xl p-3 h-20 border border-gray-700 active:scale-95 transition-all">
+                        <span class="text-2xl mb-1">🌫️</span><span class="text-[10px] text-gray-400 font-semibold">White Noise</span>
+                    </button>
+                </div>
+                <!-- Hidden ambient audio elements -->
+                <audio id="amb-rain-audio" loop preload="none"></audio>
+                <audio id="amb-fire-audio" loop preload="none"></audio>
+                <audio id="amb-cafe-audio" loop preload="none"></audio>
+                <audio id="amb-forest-audio" loop preload="none"></audio>
+                <audio id="amb-waves-audio" loop preload="none"></audio>
+                <audio id="amb-white-audio" loop preload="none"></audio>
+            </div>
+
+            <!-- === TODAY'S FOCUS GOAL === -->
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-5 shadow-2xl">
+                <h2 class="text-white font-bold text-sm uppercase tracking-widest opacity-60 mb-3">Today's Focus Goal 🎯</h2>
+                <div class="flex gap-2">
+                    <input id="focus-goal-input" type="text" placeholder="e.g. Finish chapter 4 of stats..." class="flex-1 bg-gray-800 text-white text-sm rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500 border border-gray-700 placeholder-gray-600">
+                    <button onclick="app.saveFocusGoal()" class="bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold text-sm active:scale-95 transition-transform">Set</button>
+                </div>
+                <p id="focus-goal-display" class="hidden mt-3 bg-emerald-900/30 border border-emerald-800 rounded-xl px-4 py-3 text-emerald-300 text-sm font-medium"></p>
+            </div>
+
+        </div>
+
+        <style>
+            .lofi-eq { animation: lofi-eq-bounce 0.6s ease-in-out infinite alternate; }
+            .lofi-eq:nth-child(2) { animation-delay: 0.2s; }
+            .lofi-eq:nth-child(3) { animation-delay: 0.4s; }
+            @keyframes lofi-eq-bounce {
+                from { transform: scaleY(0.4); }
+                to { transform: scaleY(1.2); }
+            }
+            .ambient-btn.active {
+                background: rgba(16,185,129,0.15) !important;
+                border-color: #10b981 !important;
+            }
+            .ambient-btn.active span:last-child { color: #10b981 !important; }
+        </style>
+    </div>
+
+    <!-- === TASK AI ASSIST MODAL === -->
+    <div id="full-screen-task-ai" class="fixed inset-0 z-[56] bg-lightBg dark:bg-darkBg flex flex-col hidden">
+        <header class="bg-white dark:bg-[#303030] shadow-sm flex items-center px-4 py-3 sticky top-0 z-10 shrink-0">
+            <button onclick="history.back()" class="text-gray-500 mr-4"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+            <div class="flex items-center gap-2 flex-1">
+                <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight">AI Task Helper</h1>
+                    <p id="task-ai-subtitle" class="text-[10px] opacity-50 leading-tight">Powered by Vertex AI</p>
+                </div>
+            </div>
+            <button onclick="app.clearTaskAIChat()" class="text-gray-400 text-sm p-2" title="Clear chat"><i class="fa-solid fa-broom"></i></button>
+        </header>
+        <div id="task-ai-messages" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+        <div id="task-ai-chips" class="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar shrink-0"></div>
+        <div class="p-4 bg-white dark:bg-[#303030] border-t border-gray-100 dark:border-gray-700 shrink-0 pb-safe">
+            <div class="flex gap-2 items-end">
+                <textarea id="task-ai-input" rows="1" placeholder="Ask about this task..." class="flex-1 bg-gray-100 dark:bg-gray-700 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-violet-400 resize-none max-h-32 overflow-y-auto" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();app.sendTaskAIMessage();}"></textarea>
+                <button onclick="app.sendTaskAIMessage()" class="w-11 h-11 bg-violet-500 hover:bg-violet-600 text-white rounded-2xl flex items-center justify-center shrink-0 transition-colors active:scale-95">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <button id="fab" onclick="app.handleFabClick()" class="fixed bottom-20 right-4 bg-blueAccent dark:bg-orangeAccent text-white px-5 py-3 rounded-2xl shadow-lg font-bold flex items-center gap-2 z-30"><i id="fab-icon" class="fa-solid fa-plus"></i><span id="fab-label">Add</span></button>
 
     <nav class="fixed bottom-0 w-full bg-white dark:bg-[#303030] border-t border-gray-200 dark:border-gray-700 h-16 flex justify-around items-center z-40 pb-safe shadow-lg">
@@ -1508,6 +1720,8 @@
         'modal-blog-comments',    // Top priority (on top of blogs)
         'full-screen-feedback',   
         'full-screen-chat',       
+        'full-screen-task-ai',
+        'full-screen-study-room',
         'full-screen-azai',
         'modal-write-blog',
         'full-screen-profile',    
@@ -1533,6 +1747,25 @@
             if (id === 'full-screen-chat' && this.activeChatListener) {
                 this.activeChatListener(); 
                 this.activeChatListener = null;
+            }
+            
+            // Special cleanup for Study Room (stop timer interval but keep stats)
+            if (id === 'full-screen-study-room') {
+                this._stopPomoInterval();
+                this._pomoState.running = false;
+                // Stop lofi audio
+                const lofiAudio = document.getElementById('lofi-audio');
+                if (lofiAudio && this._lofiState) { lofiAudio.pause(); this._lofiState.playing = false; }
+                // Stop ambient sounds
+                Object.keys(this._ambientState || {}).forEach(t => {
+                    if (this._ambientState[t]) {
+                        const a = document.getElementById(`amb-${t}-audio`);
+                        if (a) { a.pause(); a.currentTime = 0; }
+                        this._ambientState[t] = false;
+                        const btn = document.getElementById(`amb-${t}`);
+                        if (btn) btn.classList.remove('active');
+                    }
+                });
             }
             
             // Special cleanup for generic overlay
@@ -1887,6 +2120,369 @@ showNotifications() {
                 }
                 msgs.scrollTop = msgs.scrollHeight;
             },
+
+            // --- STUDY ROOM ---
+            _pomoState: { mode: 'work', running: false, remaining: 25 * 60, total: 25 * 60, interval: null, sessionsDone: 0, totalMinsFocused: 0 },
+            _lofiStations: [
+                { name: 'Lofi Beats Radio', label: '🌙 Relaxing Study Music', src: 'https://streams.fluxfm.de/Chillout/mp3-128/streams.fluxfm.de/' },
+                { name: 'Coffee Shop Radio', label: '☕ Warm & Cozy Vibes', src: 'https://streams.fluxfm.de/Chillout/mp3-128/streams.fluxfm.de/' },
+                { name: 'Chill Vibes Radio', label: '🌿 Nature Study Sounds', src: 'https://streams.fluxfm.de/Chillout/mp3-128/streams.fluxfm.de/' },
+                { name: 'Ocean Focus Radio', label: '🌊 Deep Focus Flow', src: 'https://streams.fluxfm.de/Chillout/mp3-128/streams.fluxfm.de/' },
+            ],
+            _lofiState: { playing: false, station: 0 },
+            _ambientAudios: {},
+            _ambientState: {},
+
+            openStudyRoom() {
+                history.pushState({ view: 'study-room' }, null, "");
+                document.getElementById('full-screen-study-room').classList.remove('hidden');
+                // Restore focus goal
+                const goal = localStorage.getItem('az_focus_goal');
+                if (goal) {
+                    const disp = document.getElementById('focus-goal-display');
+                    document.getElementById('focus-goal-input').value = goal;
+                    disp.textContent = '🎯 ' + goal;
+                    disp.classList.remove('hidden');
+                }
+                this._updatePomoUI();
+            },
+
+            _pomoDurations: { work: 25 * 60, short: 5 * 60, long: 15 * 60 },
+            _pomoColors: { work: '#10b981', short: '#3b82f6', long: '#8b5cf6' },
+            _pomoLabels: { work: 'FOCUS', short: 'SHORT BREAK', long: 'LONG BREAK' },
+
+            setPomoMode(mode) {
+                const s = this._pomoState;
+                if (s.running) this._stopPomoInterval();
+                s.running = false;
+                s.mode = mode;
+                s.total = this._pomoDurations[mode];
+                s.remaining = s.total;
+                this._updatePomoUI();
+            },
+
+            togglePomo() {
+                const s = this._pomoState;
+                if (s.running) {
+                    this._stopPomoInterval();
+                    s.running = false;
+                } else {
+                    s.running = true;
+                    s.interval = setInterval(() => this._tickPomo(), 1000);
+                }
+                this._updatePomoUI();
+            },
+
+            _stopPomoInterval() {
+                if (this._pomoState.interval) { clearInterval(this._pomoState.interval); this._pomoState.interval = null; }
+            },
+
+            _tickPomo() {
+                const s = this._pomoState;
+                s.remaining--;
+                if (s.remaining <= 0) {
+                    s.remaining = 0;
+                    this._stopPomoInterval();
+                    s.running = false;
+                    // Count sessions
+                    if (s.mode === 'work') {
+                        s.sessionsDone = Math.min(s.sessionsDone + 1, 4);
+                        s.totalMinsFocused += 25;
+                        this._pomoNotify('Focus session complete! 🍅 Time for a break.');
+                        // Auto switch to break
+                        const nextMode = s.sessionsDone % 4 === 0 ? 'long' : 'short';
+                        this.setPomoMode(nextMode);
+                    } else {
+                        this._pomoNotify('Break over! Time to focus. 💪');
+                        this.setPomoMode('work');
+                    }
+                    if (s.sessionsDone >= 4) { s.sessionsDone = 0; }
+                    this._updatePomoSessionDots();
+                    this._updatePomoStats();
+                    return;
+                }
+                this._updatePomoUI();
+            },
+
+            _pomoNotify(msg) {
+                try {
+                    if (Notification && Notification.permission === 'granted') {
+                        new Notification('AZ Study Room 🍃', { body: msg, icon: '/pwa/icons/icon-192.png' });
+                    }
+                } catch(e) {}
+                // Also show in-app toast
+                this._showPomoToast(msg);
+            },
+
+            _showPomoToast(msg) {
+                let toast = document.getElementById('pomo-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'pomo-toast';
+                    toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-emerald-700 text-white px-5 py-3 rounded-2xl shadow-xl text-sm font-semibold z-[100] transition-opacity duration-500';
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = msg;
+                toast.style.opacity = '1';
+                clearTimeout(this._pomoToastTimer);
+                this._pomoToastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 3500);
+            },
+
+            resetPomo() {
+                this._stopPomoInterval();
+                const s = this._pomoState;
+                s.running = false;
+                s.remaining = s.total;
+                this._updatePomoUI();
+            },
+
+            skipPomo() {
+                this._stopPomoInterval();
+                const s = this._pomoState;
+                s.remaining = 0;
+                s.running = false;
+                this._tickPomo();
+            },
+
+            _updatePomoUI() {
+                const s = this._pomoState;
+                const mins = Math.floor(s.remaining / 60).toString().padStart(2, '0');
+                const secs = (s.remaining % 60).toString().padStart(2, '0');
+                const disp = document.getElementById('pomo-display');
+                const ring = document.getElementById('pomo-ring');
+                const label = document.getElementById('pomo-mode-label');
+                const icon = document.getElementById('pomo-play-icon');
+                const btn = document.getElementById('pomo-start-btn');
+                if (!disp) return;
+                disp.textContent = `${mins}:${secs}`;
+                if (label) label.textContent = this._pomoLabels[s.mode];
+                // Ring
+                const circumference = 553;
+                const progress = s.remaining / s.total;
+                if (ring) {
+                    ring.style.strokeDashoffset = circumference * (1 - progress);
+                    ring.style.stroke = this._pomoColors[s.mode];
+                }
+                // Play/Pause icon
+                if (icon) icon.className = s.running ? 'fa-solid fa-pause text-2xl' : 'fa-solid fa-play text-2xl ml-1';
+                if (btn) btn.style.background = this._pomoColors[s.mode];
+                // Mode buttons
+                ['work', 'short', 'long'].forEach(m => {
+                    const el = document.getElementById(`pomo-btn-${m}`);
+                    if (el) { el.style.background = m === s.mode ? this._pomoColors[m] : ''; el.classList.toggle('text-white', m === s.mode); el.classList.toggle('text-gray-400', m !== s.mode); }
+                });
+                this._updatePomoSessionDots();
+                this._updatePomoStats();
+            },
+
+            _updatePomoSessionDots() {
+                const s = this._pomoState;
+                for (let i = 1; i <= 4; i++) {
+                    const dot = document.getElementById(`pomo-s${i}`);
+                    if (dot) { dot.style.background = i <= s.sessionsDone ? '#10b981' : ''; }
+                }
+            },
+
+            _updatePomoStats() {
+                const s = this._pomoState;
+                const el1 = document.getElementById('pomo-sessions-done');
+                const el2 = document.getElementById('pomo-total-mins');
+                if (el1) el1.textContent = s.sessionsDone;
+                if (el2) el2.textContent = s.totalMinsFocused;
+            },
+
+            // Lofi Radio
+            toggleLofi() {
+                const audio = document.getElementById('lofi-audio');
+                const icon = document.getElementById('lofi-play-icon');
+                const liveEl = document.getElementById('lofi-live-dot');
+                const eqBars = document.querySelectorAll('.lofi-eq');
+                if (!audio) return;
+                if (this._lofiState.playing) {
+                    audio.pause();
+                    this._lofiState.playing = false;
+                    if (icon) icon.className = 'fa-solid fa-play text-xl ml-0.5';
+                    if (liveEl) liveEl.classList.add('hidden');
+                    eqBars.forEach(b => b.classList.add('hidden'));
+                } else {
+                    const station = this._lofiStations[this._lofiState.station];
+                    if (!audio.src || audio.src !== station.src) {
+                        audio.src = station.src;
+                    }
+                    audio.volume = (parseInt(document.getElementById('lofi-volume').value) || 70) / 100;
+                    audio.play().catch(() => {});
+                    this._lofiState.playing = true;
+                    if (icon) icon.className = 'fa-solid fa-pause text-xl';
+                    if (liveEl) liveEl.classList.remove('hidden');
+                    eqBars.forEach(b => b.classList.remove('hidden'));
+                }
+            },
+
+            selectLofiStation(idx) {
+                this._lofiState.station = idx;
+                const station = this._lofiStations[idx];
+                document.querySelectorAll('.lofi-station-btn').forEach((b, i) => {
+                    b.classList.toggle('bg-emerald-600', i === idx);
+                    b.classList.toggle('text-white', i === idx);
+                    b.classList.toggle('bg-gray-800', i !== idx);
+                    b.classList.toggle('text-gray-400', i !== idx);
+                });
+                const nameEl = document.getElementById('lofi-track-name');
+                const labelEl = document.getElementById('lofi-station-name');
+                if (nameEl) nameEl.textContent = station.name;
+                if (labelEl) labelEl.textContent = station.label;
+                // If playing, reload stream
+                if (this._lofiState.playing) {
+                    const audio = document.getElementById('lofi-audio');
+                    if (audio) { audio.src = station.src; audio.play().catch(() => {}); }
+                }
+            },
+
+            setLofiVolume(val) {
+                const audio = document.getElementById('lofi-audio');
+                const disp = document.getElementById('lofi-vol-display');
+                if (audio) audio.volume = parseInt(val) / 100;
+                if (disp) disp.textContent = val + '%';
+            },
+
+            // Ambient Sounds
+            _ambientSources: {
+                rain: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0c6ff1bab.mp3?filename=rain-and-thunder-16705.mp3',
+                fire: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b5b0c4e7a.mp3?filename=fireplace-sound-159665.mp3',
+                cafe: 'https://cdn.pixabay.com/download/audio/2022/08/04/audio_2dde668d05.mp3?filename=coffee-shop-ambience-noise-113786.mp3',
+                forest: 'https://cdn.pixabay.com/download/audio/2022/09/09/audio_5f6b2b0b6b.mp3?filename=forest-ambience-birds-137806.mp3',
+                waves: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_270f97e714.mp3?filename=relaxing-ocean-waves-143316.mp3',
+                white: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d1aacef9d3.mp3?filename=white-noise-16755.mp3',
+            },
+
+            toggleAmbient(type) {
+                const audioId = `amb-${type}-audio`;
+                let audio = document.getElementById(audioId);
+                const btn = document.getElementById(`amb-${type}`);
+                if (!audio) return;
+                const isActive = this._ambientState[type];
+                if (isActive) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    this._ambientState[type] = false;
+                    if (btn) btn.classList.remove('active');
+                } else {
+                    if (!audio.src) audio.src = this._ambientSources[type];
+                    audio.volume = 0.4;
+                    audio.loop = true;
+                    audio.play().catch(() => {});
+                    this._ambientState[type] = true;
+                    if (btn) btn.classList.add('active');
+                }
+            },
+
+            saveFocusGoal() {
+                const val = document.getElementById('focus-goal-input').value.trim();
+                if (!val) return;
+                localStorage.setItem('az_focus_goal', val);
+                const disp = document.getElementById('focus-goal-display');
+                disp.textContent = '🎯 ' + val;
+                disp.classList.remove('hidden');
+            },
+
+            // --- TASK AI ASSISTANT ---
+            _taskAIChat: null,
+            _currentTaskContext: '',
+
+            openTaskAI(taskId, taskTitle, taskCourse) {
+                history.pushState({ view: 'task-ai' }, null, "");
+                this._taskAIChat = null;
+                this._currentTaskContext = `Assignment: "${taskTitle}" for ${taskCourse}`;
+                const modal = document.getElementById('full-screen-task-ai');
+                const subtitle = document.getElementById('task-ai-subtitle');
+                if (subtitle) subtitle.textContent = `Helping with: ${taskTitle}`;
+                const msgs = document.getElementById('task-ai-messages');
+                const firstName = (this.data.user.name || '').trim().split(/\s+/)[0];
+                msgs.innerHTML = `
+                    <div class="flex gap-3 items-start">
+                        <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                            <p class="text-sm">Hey${firstName ? ' ' + firstName : ''}! I'm here to help with your assignment: <strong>${this._escapeHtml(taskTitle)}</strong> for <em>${this._escapeHtml(taskCourse)}</em>. What would you like help with? 🤖✨</p>
+                        </div>
+                    </div>`;
+                // Quick action chips
+                const chips = document.getElementById('task-ai-chips');
+                chips.innerHTML = `
+                    <button onclick="app.sendTaskAIMessage('Break down this assignment into steps: ${taskTitle.replace(/'/g,"\\'")}')'" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">📋 Break it down</button>
+                    <button onclick="app.sendTaskAIMessage('Give me key points I need to cover for: ${taskTitle.replace(/'/g,"\\'")}')'" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">💡 Key points</button>
+                    <button onclick="app.sendTaskAIMessage('Suggest resources and references for: ${taskTitle.replace(/'/g,"\\'")}')'" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">📚 Resources</button>
+                    <button onclick="app.sendTaskAIMessage('How long would this realistically take to complete: ${taskTitle.replace(/'/g,"\\'")}')'" class="shrink-0 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-semibold px-3 py-2 rounded-full whitespace-nowrap">⏱️ Time estimate</button>`;
+                modal.classList.remove('hidden');
+            },
+
+            clearTaskAIChat() {
+                this._taskAIChat = null;
+                const msgs = document.getElementById('task-ai-messages');
+                msgs.innerHTML = `
+                    <div class="flex gap-3 items-start">
+                        <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                            <p class="text-sm">Chat cleared! Ask me anything about your assignment. 🤖</p>
+                        </div>
+                    </div>`;
+            },
+
+            async sendTaskAIMessage(prefill) {
+                const input = document.getElementById('task-ai-input');
+                const text = prefill !== undefined ? prefill : (input.value.trim());
+                if (!text) return;
+                input.value = '';
+                input.style.height = 'auto';
+                document.getElementById('task-ai-chips').classList.add('hidden');
+                const msgs = document.getElementById('task-ai-messages');
+                msgs.innerHTML += `
+                    <div class="flex gap-3 items-start justify-end">
+                        <div class="bg-violet-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm max-w-[85%]">
+                            <p class="text-sm">${this._escapeHtml(text)}</p>
+                        </div>
+                    </div>`;
+                const typingId = 'task-ai-typing-' + Date.now();
+                msgs.innerHTML += `
+                    <div id="${typingId}" class="flex gap-3 items-start">
+                        <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                        <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                            <span class="flex gap-1 items-center"><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:0ms"></span><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:150ms"></span><span class="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style="animation-delay:300ms"></span></span>
+                        </div>
+                    </div>`;
+                msgs.scrollTop = msgs.scrollHeight;
+                try {
+                    const model = await this._getAzAIModel();
+                    if (!this._taskAIChat) {
+                        this._taskAIChat = model.startChat({
+                            history: [{ role: 'user', parts: [{ text: `Context: I need help with this assignment — ${this._currentTaskContext}. Please be specific and helpful.` }] }, { role: 'model', parts: [{ text: `Got it! I'll help you specifically with: ${this._currentTaskContext}. What aspect do you need help with?` }] }]
+                        });
+                    }
+                    const result = await this._taskAIChat.sendMessage(text);
+                    const reply = result.response.text();
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    msgs.innerHTML += `
+                        <div class="flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                            <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                                <p class="text-sm whitespace-pre-wrap">${this._escapeHtml(reply)}</p>
+                            </div>
+                        </div>`;
+                } catch(e) {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    msgs.innerHTML += `
+                        <div class="flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-sm"></i></div>
+                            <div class="bg-white dark:bg-darkCard rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[85%]">
+                                <p class="text-sm text-red-500">Oops! Something went wrong. Please try again. 😅</p>
+                            </div>
+                        </div>`;
+                    console.error('[Task AI]', e);
+                }
+                msgs.scrollTop = msgs.scrollHeight;
+            },
+
             // --- STREAK HISTORY ---
             openStreakHistory() {
                 const list = document.getElementById('streak-history-list');
@@ -3939,7 +4535,7 @@ document.getElementById('admin-team-list').innerHTML = adminHtml || '<tr><td col
                     list.innerHTML += `<div class="bg-white dark:bg-darkCard rounded-xl shadow p-4 flex items-center gap-4 ${isToday} relative overflow-hidden"><div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">${c.day.substring(0,3).toUpperCase()}</div><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${c.name}</h3><p class="text-sm font-medium text-blueAccent dark:text-orangeAccent"><i class="fa-regular fa-clock mr-1"></i>${tCheck}</p><p class="text-xs opacity-60 truncate">${c.venue}</p></div><div class="flex gap-3"><button onclick='app.editCourse(${JSON.stringify(c)})'><i class="fa-solid fa-pen text-gray-400 hover:text-blueAccent"></i></button><button onclick="app.deleteCourse('${c.id}')"><i class="fa-solid fa-trash text-gray-400 hover:text-red-500"></i></button></div></div>`;
                 }); 
             },
-            renderAssignments() { const list = document.getElementById('assignment-list'); list.innerHTML = ''; if(this.data.assignments.length === 0) { document.getElementById('empty-assignments').classList.remove('hidden'); return; } document.getElementById('empty-assignments').classList.add('hidden'); this.data.assignments.forEach(a => { const style = a.isCompleted ? 'task-done' : ''; const check = a.isCompleted ? 'checked' : ''; list.innerHTML += `<div class="bg-white dark:bg-darkCard rounded-xl shadow p-4 flex justify-between items-center border-l-4 border-blueAccent"><div class="flex items-center gap-3"><input type="checkbox" ${check} onclick="app.toggleAssignment('${a.id}', ${a.isCompleted})" class="w-5 h-5 cursor-pointer"><div class="${style}"><h3 class="font-bold">${a.title}</h3><p class="text-xs opacity-60">${a.course} • ${a.dueDate}</p></div></div><button onclick="app.deleteAssignment('${a.id}')"><i class="fa-solid fa-trash text-gray-400"></i></button></div>`; }); },
+            renderAssignments() { const list = document.getElementById('assignment-list'); list.innerHTML = ''; if(this.data.assignments.length === 0) { document.getElementById('empty-assignments').classList.remove('hidden'); return; } document.getElementById('empty-assignments').classList.add('hidden'); this.data.assignments.forEach(a => { const style = a.isCompleted ? 'task-done' : ''; const check = a.isCompleted ? 'checked' : ''; list.innerHTML += `<div class="bg-white dark:bg-darkCard rounded-xl shadow p-4 border-l-4 border-blueAccent"><div class="flex justify-between items-center"><div class="flex items-center gap-3 flex-1 min-w-0"><input type="checkbox" ${check} onclick="app.toggleAssignment('${a.id}', ${a.isCompleted})" class="w-5 h-5 cursor-pointer shrink-0"><div class="${style} min-w-0"><h3 class="font-bold truncate">${this._escapeHtml(a.title)}</h3><p class="text-xs opacity-60">${this._escapeHtml(a.course)} • ${a.dueDate}</p></div></div><div class="flex items-center gap-2 shrink-0 ml-2"><button onclick="app.openTaskAI('${a.id}', \`${a.title.replace(/`/g,'\\`')}\`, \`${a.course.replace(/`/g,'\\`')}\`)" class="flex items-center gap-1 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300 text-xs font-semibold px-3 py-1.5 rounded-full active:scale-95 transition-transform"><i class="fa-solid fa-robot text-xs"></i><span>AI Help</span></button><button onclick="app.deleteAssignment('${a.id}')"><i class="fa-solid fa-trash text-gray-400"></i></button></div></div></div>`; }); },
             renderNotes() { const list = document.getElementById('notes-list'); list.innerHTML = ''; if(this.data.notes.length === 0) { document.getElementById('empty-notes').classList.remove('hidden'); return; } document.getElementById('empty-notes').classList.add('hidden'); this.data.notes.forEach(n => { const card = document.createElement('div'); card.className = "bg-noteYellow dark:bg-darkCard rounded-xl p-4 shadow-sm h-32 flex flex-col cursor-pointer"; card.onclick = () => { this.data.editingNoteId = n.id; document.getElementById('note-title').value = n.title; document.getElementById('note-subtitle').value = n.subtitle; document.getElementById('note-body').value = n.body; document.getElementById('btn-delete-note').classList.remove('hidden'); app.openModal('modal-note-editor'); }; card.innerHTML = `<h3 class="font-bold line-clamp-1">${n.title}</h3><p class="text-xs opacity-80 line-clamp-2">${n.subtitle}</p>`; list.appendChild(card); }); },
             
             renderNotifications() {
