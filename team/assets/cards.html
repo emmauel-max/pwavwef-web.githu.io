@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AZ Learner admin team profile cards — download beautiful cards for each team member." />
+  <title>Admin Cards | AZ Learner Team</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../../favicon.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- html2canvas for download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand-blue:       #3b82f6;
+      --brand-blue-dark:  #1d4ed8;
+      --brand-orange:     #FFAB40;
+      --brand-purple:     #a855f7;
+      --brand-teal:       #14b8a6;
+      --bg-dark:          #0f172a;
+      --bg-card:          #1e293b;
+      --text-primary:     #f1f5f9;
+      --text-secondary:   #94a3b8;
+      --radius-card:      20px;
+      --transition-med:   0.3s ease;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated Background ──────────────────────── */
+    .bg-animated {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 35%, #0f172a 65%, #0c1a2e 100%);
+      background-size: 400% 400%;
+      animation: bgShift 18s ease infinite;
+    }
+    @keyframes bgShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    /* ── Header ───────────────────────────────────── */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,23,42,.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .site-logo {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: .08em;
+      background: linear-gradient(90deg, var(--brand-blue), var(--brand-purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--text-secondary); font-size: .9rem; text-decoration: none;
+      transition: color var(--transition-med);
+    }
+    .nav-back svg { width: 16px; height: 16px; }
+    .nav-back:hover { color: var(--text-primary); }
+
+    /* ── Page Hero ────────────────────────────────── */
+    .page-hero {
+      text-align: center;
+      padding: 64px 20px 40px;
+    }
+    .page-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--brand-blue), var(--brand-purple), var(--brand-orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .page-hero p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── Cards Grid ───────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 32px;
+      padding: 0 20px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── Card Wrapper ─────────────────────────────── */
+    .card-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ── Profile Card (the downloadable tile) ─────── */
+    .profile-card {
+      width: 300px;
+      height: 380px;
+      border-radius: var(--radius-card);
+      padding: 32px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.07);
+      text-align: center;
+      /* gradient will be set per-card via JS */
+    }
+
+    /* Decorative top bar */
+    .profile-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    /* Subtle glow blob */
+    .profile-card::after {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      opacity: .18;
+      filter: blur(48px);
+    }
+
+    .card-photo-wrap {
+      position: relative;
+      margin-bottom: 18px;
+      flex-shrink: 0;
+    }
+    .card-photo-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      padding: 3px;
+      display: flex; align-items: center; justify-content: center;
+      /* gradient ring set per card */
+    }
+    .card-photo {
+      width: 94px; height: 94px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(15,23,42,.8);
+      display: block;
+    }
+
+    .card-org {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 8px;
+    }
+    .card-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .card-role {
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.85);
+      margin-bottom: 18px;
+    }
+    .card-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .card-skill {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.7);
+    }
+    .card-footer-url {
+      font-size: .7rem;
+      color: rgba(255,255,255,.35);
+      letter-spacing: .04em;
+      margin-top: auto;
+    }
+
+    /* ── Download Button ──────────────────────────── */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-dark));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: .9rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity var(--transition-med), transform var(--transition-med), box-shadow var(--transition-med);
+      box-shadow: 0 4px 18px rgba(59,130,246,.35);
+    }
+    .btn-download svg { width: 18px; height: 18px; }
+    .btn-download:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(59,130,246,.5);
+    }
+    .btn-download:active { transform: translateY(0); }
+    .btn-download.loading { opacity: .65; pointer-events: none; }
+
+    /* ── Loading / Error States ───────────────────── */
+    .state-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 16px;
+      padding: 80px 20px; text-align: center;
+    }
+    .spinner {
+      width: 42px; height: 42px;
+      border: 3px solid rgba(255,255,255,.1);
+      border-top-color: var(--brand-blue);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-wrap p { color: var(--text-secondary); }
+    .error-icon { font-size: 2.5rem; }
+    .error-msg { color: #f87171; font-weight: 600; }
+
+    /* ── Footer ───────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: .88rem;
+    }
+    footer a {
+      color: var(--brand-blue);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ───────────────────────────────── */
+    @media (max-width: 480px) {
+      .cards-grid { grid-template-columns: 1fr; justify-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-animated" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="site-logo" href="../../index.html">AZ LEARNER</a>
+      <nav aria-label="Site navigation">
+        <a class="nav-back" href="../index.html" aria-label="Back to Team page">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+          </svg>
+          Team
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero" aria-labelledby="page-heading">
+    <h1 id="page-heading">Admin Profile Cards</h1>
+    <p>Download a beautiful profile card for each AZ Learner team member — perfect for sharing on social media or printing.</p>
+  </section>
+
+  <!-- CARDS REGION -->
+  <main id="cards-region" aria-label="Admin profile cards" aria-live="polite">
+    <div class="state-wrap" id="loading-state" aria-busy="true">
+      <div class="spinner" role="status" aria-label="Loading team data"></div>
+      <p>Loading team cards…</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      &copy; 2025 <a href="../../index.html">AZ Learner</a> &mdash;
+      <a href="../index.html">Meet the Team</a>
+    </p>
+  </footer>
+
+  <script>
+    /* ── Colour palettes per card index ─────────────
+       Each entry: { bg (CSS background for card), ring (gradient for avatar ring),
+                     top (4px accent bar), glow (::after blob colour) }               */
+    const PALETTES = [
+      {
+        bg:   'linear-gradient(145deg, #0f1f40 0%, #1a2d5a 60%, #0f1f40 100%)',
+        ring: 'linear-gradient(135deg, #3b82f6, #a855f7)',
+        top:  'linear-gradient(90deg, #3b82f6, #a855f7)',
+        glow: '#3b82f6'
+      },
+      {
+        bg:   'linear-gradient(145deg, #1a0a2e 0%, #2d1259 60%, #1a0a2e 100%)',
+        ring: 'linear-gradient(135deg, #a855f7, #ec4899)',
+        top:  'linear-gradient(90deg, #a855f7, #ec4899)',
+        glow: '#a855f7'
+      },
+      {
+        bg:   'linear-gradient(145deg, #0a1f1e 0%, #133330 60%, #0a1f1e 100%)',
+        ring: 'linear-gradient(135deg, #14b8a6, #3b82f6)',
+        top:  'linear-gradient(90deg, #14b8a6, #3b82f6)',
+        glow: '#14b8a6'
+      },
+      {
+        bg:   'linear-gradient(145deg, #1f100a 0%, #3d1f05 60%, #1f100a 100%)',
+        ring: 'linear-gradient(135deg, #FFAB40, #f97316)',
+        top:  'linear-gradient(90deg, #FFAB40, #f97316)',
+        glow: '#FFAB40'
+      },
+      {
+        bg:   'linear-gradient(145deg, #0a1628 0%, #0f2450 60%, #0a1628 100%)',
+        ring: 'linear-gradient(135deg, #38bdf8, #3b82f6)',
+        top:  'linear-gradient(90deg, #38bdf8, #3b82f6)',
+        glow: '#38bdf8'
+      },
+      {
+        bg:   'linear-gradient(145deg, #1a1028 0%, #2e1a4a 60%, #1a1028 100%)',
+        ring: 'linear-gradient(135deg, #818cf8, #a855f7)',
+        top:  'linear-gradient(90deg, #818cf8, #a855f7)',
+        glow: '#818cf8'
+      },
+      {
+        bg:   'linear-gradient(145deg, #071b12 0%, #0e3322 60%, #071b12 100%)',
+        ring: 'linear-gradient(135deg, #34d399, #14b8a6)',
+        top:  'linear-gradient(90deg, #34d399, #14b8a6)',
+        glow: '#34d399'
+      }
+    ];
+
+    /* Resolve image path relative to this file (team/assets/cards.html) */
+    function resolveImage(src) {
+      if (!src) return '../images/placeholder.svg';
+      if (src.startsWith('http')) return src;
+      /* src like "assets/images/francis.jpg" → from team/assets/ context: ../images/francis.jpg
+         but we're inside team/assets/ so assets/images/... means images/... from here */
+      return src.replace(/^assets\/images\//, 'images/');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function buildCard(member, idx) {
+      const pal   = PALETTES[idx % PALETTES.length];
+      const imgSrc = resolveImage(member.image);
+      const skills = (member.skills || []).slice(0, 4);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'card-wrapper';
+
+      /* ── Card tile ── */
+      const card = document.createElement('div');
+      card.className = 'profile-card';
+      card.id = `card-${idx}`;
+      card.style.background = pal.bg;
+      card.setAttribute('aria-label', `Profile card for ${escapeHtml(member.name)}`);
+
+      /* accent bar */
+      const styleEl = document.createElement('style');
+      styleEl.textContent =
+        `#card-${idx}::before { background: ${pal.top}; }` +
+        `#card-${idx}::after  { background: ${pal.glow}; }`;
+      document.head.appendChild(styleEl);
+
+      /* photo ring */
+      const photoWrap = document.createElement('div');
+      photoWrap.className = 'card-photo-wrap';
+
+      const ring = document.createElement('div');
+      ring.className = 'card-photo-ring';
+      ring.style.background = pal.ring;
+
+      const img = document.createElement('img');
+      img.className = 'card-photo';
+      img.src = imgSrc;
+      img.alt = `Photo of ${escapeHtml(member.name)}`;
+      img.loading = 'lazy';
+      img.onerror = function() { this.src = '../images/placeholder.svg'; };
+
+      ring.appendChild(img);
+      photoWrap.appendChild(ring);
+
+      /* text */
+      const org  = document.createElement('p');
+      org.className = 'card-org';
+      org.textContent = 'AZ Learner';
+
+      const name = document.createElement('h2');
+      name.className = 'card-name';
+      name.textContent = member.name;
+
+      const role = document.createElement('span');
+      role.className = 'card-role';
+      role.textContent = member.role;
+
+      /* skills */
+      const skillsEl = document.createElement('div');
+      skillsEl.className = 'card-skills';
+      skills.forEach(s => {
+        const pill = document.createElement('span');
+        pill.className = 'card-skill';
+        pill.textContent = s;
+        skillsEl.appendChild(pill);
+      });
+
+      /* footer URL */
+      const url = document.createElement('p');
+      url.className = 'card-footer-url';
+      url.textContent = 'azlearner.me/team';
+
+      card.appendChild(photoWrap);
+      card.appendChild(org);
+      card.appendChild(name);
+      card.appendChild(role);
+      card.appendChild(skillsEl);
+      card.appendChild(url);
+
+      /* ── Download button ── */
+      const btn = document.createElement('button');
+      btn.className = 'btn-download';
+      btn.setAttribute('aria-label', `Download profile card for ${escapeHtml(member.name)}`);
+      btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download Card
+      `;
+
+      btn.addEventListener('click', () => downloadCard(card, btn, member.name));
+
+      wrapper.appendChild(card);
+      wrapper.appendChild(btn);
+      return wrapper;
+    }
+
+    async function downloadCard(cardEl, btn, memberName) {
+      if (!window.html2canvas) {
+        alert('html2canvas is not loaded yet. Please wait a moment and try again.');
+        return;
+      }
+      btn.classList.add('loading');
+      btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+        Generating…
+      `;
+
+      try {
+        const canvas = await html2canvas(cardEl, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: null,
+          logging: false
+        });
+        const link = document.createElement('a');
+        const safeName = memberName.toLowerCase().replace(/\s+/g, '-');
+        link.download = `az-learner-${safeName}-card.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        console.error('Download failed:', err);
+        alert('Could not generate the image. Try right-clicking the card and saving the page, or take a screenshot.');
+      } finally {
+        btn.classList.remove('loading');
+        btn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Card
+        `;
+      }
+    }
+
+    async function init() {
+      const region = document.getElementById('cards-region');
+      const loadingState = document.getElementById('loading-state');
+
+      try {
+        const res = await fetch('../team-data.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const team = data.team || [];
+
+        if (team.length === 0) throw new Error('No team members found.');
+
+        /* build grid */
+        const grid = document.createElement('div');
+        grid.className = 'cards-grid';
+        team.forEach((member, idx) => grid.appendChild(buildCard(member, idx)));
+
+        region.innerHTML = '';
+        region.appendChild(grid);
+      } catch (err) {
+        region.innerHTML = `
+          <div class="state-wrap">
+            <span class="error-icon" aria-hidden="true">⚠️</span>
+            <p class="error-msg">Failed to load team data</p>
+            <p>${escapeHtml(err.message)}</p>
+          </div>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
