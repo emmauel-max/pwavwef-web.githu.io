@@ -510,10 +510,26 @@ service cloud.firestore {
       // Document IDs are formatted as "{userId}_{courseSlug}"
       allow read, write: if isAuthenticated() && (
         progressId == request.auth.uid + '_html-css' ||
-        progressId == request.auth.uid + '_trading-exness'
+        progressId == request.auth.uid + '_trading-exness' ||
+        progressId == request.auth.uid + '_notebook-lm' ||
+        progressId == request.auth.uid + '_linkedin-optimisation' ||
+        progressId == request.auth.uid + '_ai-prompting'
       );
     }
 
+    // ──────────────────────────────────────────────────────────────
+    // COURSE SURVEYS  (pre-course personalisation survey per user)
+    // ──────────────────────────────────────────────────────────────
+    match /course_surveys/{surveyId} {
+      // Document IDs are formatted as "{userId}_{courseSlug}"
+      allow read, write: if isAuthenticated() && (
+        surveyId == request.auth.uid + '_html-css' ||
+        surveyId == request.auth.uid + '_trading-exness' ||
+        surveyId == request.auth.uid + '_notebook-lm' ||
+        surveyId == request.auth.uid + '_linkedin-optimisation' ||
+        surveyId == request.auth.uid + '_ai-prompting'
+      );
+    }
     // ──────────────────────────────────────────────────────────────
     // ARTIFACTS / CANVAS DATA  (nested public data store)
     // ──────────────────────────────────────────────────────────────
