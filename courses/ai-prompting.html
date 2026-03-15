@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Optimisation – AZ Learner</title>
+    <title>AI Prompting Masterclass – AZ Learner</title>
     <link rel="icon" type="image/png" href="../favicon1.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,16 +12,12 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
         }
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #021d33 0%, #0f172a 50%, #021d33 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0f172a 100%);
             min-height: 100vh;
             color: white;
             font-family: 'Inter', sans-serif;
@@ -54,19 +50,19 @@
         .btn-google:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.3); transform: translateY(-2px); }
 
         /* Lesson content typography */
-        .lesson-body h2 { font-size: 1.25rem; font-weight: 700; color: #7dd3fc; margin: 1.4rem 0 0.6rem; }
-        .lesson-body h3 { font-size: 1.05rem; font-weight: 600; color: #bae6fd; margin: 1.2rem 0 0.5rem; }
+        .lesson-body h2 { font-size: 1.25rem; font-weight: 700; color: #c4b5fd; margin: 1.4rem 0 0.6rem; }
+        .lesson-body h3 { font-size: 1.05rem; font-weight: 600; color: #ddd6fe; margin: 1.2rem 0 0.5rem; }
         .lesson-body p { color: #cbd5e1; line-height: 1.75; margin-bottom: 0.85rem; font-size: 0.9375rem; }
         .lesson-body ul, .lesson-body ol { color: #cbd5e1; padding-left: 1.4rem; margin-bottom: 0.85rem; }
         .lesson-body li { margin-bottom: 0.4rem; line-height: 1.7; font-size: 0.9375rem; }
         .lesson-body code {
-            background: rgba(14,118,168,0.15);
-            border: 1px solid rgba(14,118,168,0.3);
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(139,92,246,0.25);
             padding: 1px 6px;
             border-radius: 5px;
             font-family: 'Courier New', monospace;
             font-size: 0.875rem;
-            color: #7dd3fc;
+            color: #c4b5fd;
         }
         .lesson-body pre {
             background: rgba(0,0,0,0.4);
@@ -76,17 +72,11 @@
             overflow-x: auto;
             margin-bottom: 1rem;
         }
-        .lesson-body pre code {
-            background: transparent;
-            border: none;
-            padding: 0;
-            color: #7dd3fc;
-            font-size: 0.875rem;
-        }
+        .lesson-body pre code { background: transparent; border: none; padding: 0; color: #c4b5fd; font-size: 0.875rem; }
         .lesson-body strong { color: #e2e8f0; font-weight: 600; }
         .lesson-body blockquote {
-            border-left: 3px solid #0e76a8;
-            background: rgba(14,118,168,0.07);
+            border-left: 3px solid #8b5cf6;
+            background: rgba(139,92,246,0.07);
             padding: 10px 16px;
             border-radius: 0 8px 8px 0;
             margin-bottom: 0.85rem;
@@ -94,12 +84,12 @@
             font-style: italic;
         }
         .exercise-item {
-            background: rgba(14,118,168,0.07);
-            border: 1px solid rgba(14,118,168,0.2);
+            background: rgba(139,92,246,0.07);
+            border: 1px solid rgba(139,92,246,0.2);
             border-radius: 10px;
             padding: 10px 14px;
             margin-bottom: 8px;
-            color: #7dd3fc;
+            color: #c4b5fd;
             font-size: 0.9rem;
             display: flex;
             align-items: flex-start;
@@ -107,7 +97,7 @@
         }
         .progress-bar-fill {
             height: 4px;
-            background: linear-gradient(90deg, #0e76a8, #0369a1);
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
             border-radius: 2px;
             transition: width 0.5s ease;
         }
@@ -115,26 +105,22 @@
             display: inline-block;
             width: 24px; height: 24px;
             border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #0e76a8;
+            border-top-color: #8b5cf6;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
+        .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
         .topic-pill {
             font-size: 12px;
             font-weight: 500;
             padding: 4px 12px;
-            background: rgba(14,118,168,0.10);
-            border: 1px solid rgba(14,118,168,0.25);
+            background: rgba(139,92,246,0.12);
+            border: 1px solid rgba(139,92,246,0.2);
             border-radius: 20px;
-            color: #7dd3fc;
+            color: #c4b5fd;
         }
+
         /* ── Survey overlay ── */
         .survey-option {
             background: rgba(255,255,255,0.05);
@@ -147,15 +133,32 @@
             color: #cbd5e1;
             font-size: 0.875rem;
         }
-        .survey-option:hover { background: rgba(14,118,168,0.15); border-color: rgba(14,118,168,0.4); color: #7dd3fc; }
-        .survey-option.selected { background: rgba(14,118,168,0.2); border-color: #0e76a8; color: #7dd3fc; }
+        .survey-option:hover { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.4); color: #c4b5fd; }
+        .survey-option.selected { background: rgba(139,92,246,0.2); border-color: #8b5cf6; color: #c4b5fd; }
+
         /* ── Certificate modal ── */
         #cert-modal { display: none; }
         #cert-modal.visible { display: flex; }
-        .cert-header-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#0e76a8,#FFAB40,#0e76a8,#1e3a8a); }
-        .cert-footer-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#0e76a8,#FFAB40,#0e76a8,#1e3a8a); }
-        #cert-paper::before { content:''; position:absolute; inset:12px; border:2px solid #b8860b; border-radius:2px; pointer-events:none; z-index:1; }
-        #cert-paper::after  { content:''; position:absolute; inset:17px; border:1px solid #d4af37; border-radius:1px; pointer-events:none; z-index:1; }
+        .cert-header-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
+        .cert-footer-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
+        #cert-paper::before {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border: 2px solid #b8860b;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #cert-paper::after {
+            content: '';
+            position: absolute;
+            inset: 17px;
+            border: 1px solid #d4af37;
+            border-radius: 1px;
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -163,10 +166,10 @@
     <!-- Auth Overlay -->
     <div id="auth-overlay" class="fixed inset-0 z-50 bg-gray-950 flex flex-col items-center justify-center px-6">
         <div class="text-center max-w-sm">
-            <div class="text-6xl mb-6">💼</div>
-            <h1 class="text-2xl font-black mb-2">LinkedIn Optimisation</h1>
+            <div class="text-6xl mb-6">🤖</div>
+            <h1 class="text-2xl font-black mb-2">AI Prompting Masterclass</h1>
             <p class="text-gray-400 mb-8 text-sm leading-relaxed">
-                Sign in to access your AI-powered daily lessons and track your progress.
+                Sign in to access your personalised AI lesson and claim your certificate on completion.
             </p>
             <button id="google-signin-btn" class="btn-google mx-auto">
                 <svg width="20" height="20" viewBox="0 0 48 48">
@@ -186,33 +189,41 @@
             <div class="text-center mb-5">
                 <div class="text-4xl mb-2">📋</div>
                 <h2 class="text-xl font-bold text-white">Quick Learning Survey</h2>
-                <p class="text-gray-400 text-sm mt-1">Help our AI personalise your lessons — takes about 1 minute</p>
+                <p class="text-gray-400 text-sm mt-1">Help our AI personalise your lesson — takes about 1 minute</p>
             </div>
+
+            <!-- Q1: Level -->
             <div class="mb-4">
-                <p class="text-sm font-semibold text-gray-300 mb-2">1. Your current LinkedIn profile status?</p>
+                <p class="text-sm font-semibold text-gray-300 mb-2">1. Your current experience with AI tools?</p>
                 <div class="grid grid-cols-3 gap-2" id="sq-level">
-                    <button class="survey-option" onclick="selectSurveyOption('level','No profile yet')">🆕 No profile</button>
-                    <button class="survey-option" onclick="selectSurveyOption('level','Basic profile')">📝 Basic</button>
-                    <button class="survey-option" onclick="selectSurveyOption('level','Active user')">✅ Active</button>
+                    <button class="survey-option" onclick="selectSurveyOption('level','Beginner')">🟢 Beginner</button>
+                    <button class="survey-option" onclick="selectSurveyOption('level','Intermediate')">🟡 Intermediate</button>
+                    <button class="survey-option" onclick="selectSurveyOption('level','Advanced')">🔴 Advanced</button>
                 </div>
             </div>
+
+            <!-- Q2: Goal -->
             <div class="mb-4">
-                <p class="text-sm font-semibold text-gray-300 mb-2">2. Your main goal with LinkedIn?</p>
+                <p class="text-sm font-semibold text-gray-300 mb-2">2. Your main learning goal?</p>
                 <div class="grid grid-cols-2 gap-2" id="sq-goal">
-                    <button class="survey-option" onclick="selectSurveyOption('goal','Find internships')">🔍 Find internships</button>
-                    <button class="survey-option" onclick="selectSurveyOption('goal','Get a job')">💼 Get a job</button>
-                    <button class="survey-option" onclick="selectSurveyOption('goal','Build a network')">🤝 Build network</button>
-                    <button class="survey-option" onclick="selectSurveyOption('goal','Personal branding')">🌟 Personal brand</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Get a job/internship')">💼 Get a job</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Academic projects')">📚 Academic work</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Personal productivity')">🎯 Productivity</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Build or create things')">🛠️ Build things</button>
                 </div>
             </div>
+
+            <!-- Q3: Time -->
             <div class="mb-4">
-                <p class="text-sm font-semibold text-gray-300 mb-2">3. Daily time you can dedicate?</p>
+                <p class="text-sm font-semibold text-gray-300 mb-2">3. Time you can dedicate to this lesson?</p>
                 <div class="grid grid-cols-3 gap-2" id="sq-time">
-                    <button class="survey-option" onclick="selectSurveyOption('time','10-15 min')">⚡ 10-15 min</button>
-                    <button class="survey-option" onclick="selectSurveyOption('time','30 min')">🕐 30 min</button>
-                    <button class="survey-option" onclick="selectSurveyOption('time','1 hour+')">🕑 1 hour+</button>
+                    <button class="survey-option" onclick="selectSurveyOption('time','10-15 min')">⚡ Quick (15 min)</button>
+                    <button class="survey-option" onclick="selectSurveyOption('time','30 min')">🕐 Moderate (30 min)</button>
+                    <button class="survey-option" onclick="selectSurveyOption('time','1 hour+')">🕑 Deep (1 hr+)</button>
                 </div>
             </div>
+
+            <!-- Q4: Style -->
             <div class="mb-4">
                 <p class="text-sm font-semibold text-gray-300 mb-2">4. Preferred learning style?</p>
                 <div class="grid grid-cols-1 gap-2" id="sq-style">
@@ -221,12 +232,15 @@
                     <button class="survey-option" onclick="selectSurveyOption('style','Jump straight to practice')">💻 Jump straight to practice</button>
                 </div>
             </div>
+
+            <!-- Q5: Background -->
             <div class="mb-5">
                 <p class="text-sm font-semibold text-gray-300 mb-2">5. Any relevant background? <span class="text-gray-500 font-normal">(optional)</span></p>
-                <textarea id="sq-background" rows="2" maxlength="300" placeholder="e.g. I study Accounting, I'm looking for finance internships..." class="w-full rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);"></textarea>
+                <textarea id="sq-background" rows="2" maxlength="300" placeholder="e.g. I study Computer Science, I've used ChatGPT before..." class="w-full rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);"></textarea>
             </div>
-            <button onclick="submitSurvey()" class="w-full py-3 rounded-xl font-semibold text-sm transition text-white" style="background:#0e76a8;">
-                Start My Personalised Lessons →
+
+            <button onclick="submitSurvey()" class="w-full py-3 rounded-xl font-semibold text-sm transition" style="background:#7c3aed;">
+                Start My Personalised Lesson →
             </button>
         </div>
     </div>
@@ -243,23 +257,49 @@
                     <button onclick="closeCertModal()" class="text-gray-400 hover:text-white text-xl w-8 h-8 flex items-center justify-center">✕</button>
                 </div>
             </div>
+            <!-- Certificate Paper (captured by html2canvas) -->
             <div id="cert-paper" style="background:#fff;position:relative;overflow:hidden;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-                <div style="position:absolute;top:10px;left:10px;width:50px;height:50px;z-index:2;"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
-                <div style="position:absolute;top:10px;right:10px;width:50px;height:50px;z-index:2;transform:scaleX(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
-                <div style="position:absolute;bottom:10px;left:10px;width:50px;height:50px;z-index:2;transform:scaleY(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
-                <div style="position:absolute;bottom:10px;right:10px;width:50px;height:50px;z-index:2;transform:scale(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
+                <!-- Corner ornaments -->
+                <div style="position:absolute;top:10px;left:10px;width:50px;height:50px;z-index:2;">
+                    <svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg>
+                </div>
+                <div style="position:absolute;top:10px;right:10px;width:50px;height:50px;z-index:2;transform:scaleX(-1);">
+                    <svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg>
+                </div>
+                <div style="position:absolute;bottom:10px;left:10px;width:50px;height:50px;z-index:2;transform:scaleY(-1);">
+                    <svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg>
+                </div>
+                <div style="position:absolute;bottom:10px;right:10px;width:50px;height:50px;z-index:2;transform:scale(-1);">
+                    <svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg>
+                </div>
+
                 <div class="cert-header-bar"></div>
                 <div style="padding:36px 56px 32px;text-align:center;position:relative;z-index:3;">
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Cinzel',serif;font-size:80px;font-weight:900;color:rgba(14,118,168,0.05);white-space:nowrap;pointer-events:none;user-select:none;z-index:0;">AZ LEARNER</div>
-                    <div style="font-size:40px;line-height:1;margin-bottom:6px;">💼</div>
-                    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:#0e76a8;font-weight:700;margin-bottom:4px;">AZ Learner</div>
+                    <!-- Watermark -->
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Cinzel',serif;font-size:80px;font-weight:900;color:rgba(124,58,237,0.06);white-space:nowrap;pointer-events:none;user-select:none;z-index:0;">AZ LEARNER</div>
+
+                    <div style="font-size:40px;line-height:1;margin-bottom:6px;">🤖</div>
+                    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:#7c3aed;font-weight:700;margin-bottom:4px;">AZ Learner</div>
                     <div style="font-family:'Cinzel',serif;font-size:26px;font-weight:900;color:#0f172a;letter-spacing:0.06em;margin-bottom:4px;">Certificate of Completion</div>
                     <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#64748b;margin-bottom:22px;">AI-Powered Daily Learning</div>
-                    <div style="display:flex;align-items:center;gap:10px;margin:0 auto 22px;max-width:420px;"><div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#d4af37);"></div><span style="color:#FFAB40;font-size:16px;">✦</span><div style="flex:1;height:1px;background:linear-gradient(90deg,#d4af37,transparent);"></div></div>
+
+                    <div style="display:flex;align-items:center;gap:10px;margin:0 auto 22px;max-width:420px;">
+                        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#d4af37);"></div>
+                        <span style="color:#FFAB40;font-size:16px;">✦</span>
+                        <div style="flex:1;height:1px;background:linear-gradient(90deg,#d4af37,transparent);"></div>
+                    </div>
+
                     <div style="font-size:12px;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">This certifies that</div>
                     <div id="cert-recipient" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:#1e3a8a;line-height:1.2;border-bottom:2px solid #d4af37;display:inline-block;padding-bottom:4px;margin-bottom:20px;min-width:260px;">Student Name</div>
-                    <p style="font-size:13px;color:#374151;line-height:1.8;max-width:500px;margin:0 auto 18px;">has successfully completed the <strong id="cert-course-name" style="color:#0f172a;">LinkedIn Optimisation</strong> course on AZ Learner, demonstrating consistent dedication and proficiency in LinkedIn profile optimisation and professional networking strategies.</p>
-                    <div style="display:inline-block;background:linear-gradient(135deg,#1e3a8a,#0e76a8);color:#fff;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:5px 18px;border-radius:30px;margin-bottom:28px;">🚀 &nbsp;Powered by AZ Learner AI</div>
+
+                    <p style="font-size:13px;color:#374151;line-height:1.8;max-width:500px;margin:0 auto 18px;">
+                        has successfully completed the <strong id="cert-course-name" style="color:#0f172a;">AI Prompting Masterclass</strong> course on AZ Learner,
+                        demonstrating a solid understanding of AI prompting techniques and best practices.
+                    </p>
+
+                    <div style="display:inline-block;background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:5px 18px;border-radius:30px;margin-bottom:28px;">🚀 &nbsp;Powered by AZ Learner AI</div>
+
+                    <!-- Signature -->
                     <div style="display:flex;justify-content:center;align-items:flex-end;gap:60px;flex-wrap:wrap;margin-bottom:20px;">
                         <div style="text-align:center;min-width:140px;">
                             <img id="cert-sig-img" src="../signature.png" alt="Signature" style="height:48px;object-fit:contain;margin-bottom:4px;display:block;margin-left:auto;margin-right:auto;" crossorigin="anonymous">
@@ -273,12 +313,13 @@
                             <div style="font-size:10px;color:#64748b;letter-spacing:0.06em;">AZ LEARNER</div>
                         </div>
                     </div>
+
                     <div id="cert-date" style="font-size:10px;color:#94a3b8;letter-spacing:0.1em;margin-top:4px;"></div>
                     <div id="cert-id" style="font-size:10px;color:#cbd5e1;letter-spacing:0.06em;margin-top:3px;font-family:monospace;"></div>
                 </div>
                 <div class="cert-footer-bar"></div>
             </div>
-            <p class="text-center text-gray-500 text-xs mt-3">Click Download to save as an image.</p>
+            <p class="text-center text-gray-500 text-xs mt-3">Click Download to save as an image. You can also right-click the certificate and "Save image as".</p>
         </div>
     </div>
 
@@ -291,10 +332,10 @@
                     <i class="fas fa-arrow-left text-sm"></i>
                 </a>
                 <div class="flex items-center gap-2">
-                    <span class="text-2xl">💼</span>
+                    <span class="text-2xl">🤖</span>
                     <div>
-                        <p class="font-bold text-sm text-white leading-tight">LinkedIn Optimisation</p>
-                        <p class="text-xs leading-tight" style="color:#7dd3fc;">Daily AI Lessons</p>
+                        <p class="font-bold text-sm text-white leading-tight">AI Prompting</p>
+                        <p class="text-xs leading-tight" style="color:#c4b5fd;">1-Day Masterclass</p>
                     </div>
                 </div>
             </div>
@@ -318,14 +359,14 @@
             <!-- Day Badge + Progress -->
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <div class="badge border" style="background:rgba(14,118,168,0.15);color:#7dd3fc;border-color:rgba(14,118,168,0.25);">
+                    <div class="badge" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.2);">
                         <i class="fas fa-calendar-day mr-1"></i>
                         <span id="day-badge">Day 1</span>
                     </div>
-                    <div id="new-lesson-badge" class="hidden badge border" style="background:rgba(14,118,168,0.15);color:#38bdf8;border-color:rgba(56,189,248,0.25);">
+                    <div id="new-lesson-badge" class="hidden badge" style="background:rgba(34,197,94,0.15);color:#86efac;border:1px solid rgba(34,197,94,0.2);">
                         <i class="fas fa-sparkles mr-1"></i> Fresh lesson
                     </div>
-                    <div id="saved-lesson-badge" class="hidden badge bg-gray-500/15 text-gray-400 border border-gray-500/20">
+                    <div id="saved-lesson-badge" class="hidden badge" style="background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.2);">
                         <i class="fas fa-bookmark mr-1"></i> Today's lesson
                     </div>
                 </div>
@@ -336,7 +377,7 @@
             <div class="mb-6">
                 <div class="flex justify-between text-xs text-gray-500 mb-1">
                     <span>Course progress</span>
-                    <span id="progress-text">Day 1 of your journey</span>
+                    <span id="progress-text">Day 1 of 1</span>
                 </div>
                 <div class="bg-gray-800 h-1 rounded-full overflow-hidden">
                     <div id="progress-bar" class="progress-bar-fill" style="width:5%"></div>
@@ -346,11 +387,11 @@
             <!-- Lesson Title -->
             <div class="card p-6 mb-5">
                 <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(14,118,168,0.15);border:1px solid rgba(14,118,168,0.25);">
-                        <i class="fab fa-linkedin" style="color:#7dd3fc;font-size:1.25rem;"></i>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.2);">
+                        <i class="fas fa-robot" style="color:#c4b5fd;"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color:#7dd3fc;">Today's Lesson</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider mb-1" style="color:#c4b5fd;">Today's Lesson</p>
                         <h1 id="lesson-title" class="text-xl font-bold text-white leading-tight"></h1>
                         <p id="lesson-objective" class="text-gray-400 text-sm mt-2 leading-relaxed"></p>
                     </div>
@@ -358,7 +399,7 @@
             </div>
 
             <!-- Topics covered -->
-            <div id="topics-section" class="card p-5 mb-5">
+            <div class="card p-5 mb-5">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
                     <i class="fas fa-list-check mr-1"></i> Topics Covered
                 </p>
@@ -374,55 +415,27 @@
             </div>
 
             <!-- Exercises -->
-            <div id="exercises-section" class="card p-5 mb-5">
+            <div class="card p-5 mb-5">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                    <i class="fas fa-tasks mr-1"></i> Practice Tasks
+                    <i class="fas fa-laptop-code mr-1"></i> Practice Exercises
                 </p>
                 <div id="exercises-list"></div>
             </div>
 
             <!-- Summary / What's Next -->
-            <div class="card p-5 mb-5">
-                <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#7dd3fc;">
-                    <i class="fas fa-forward mr-1"></i> Summary &amp; What's Next
+            <div class="card p-5 mb-5" style="border-color:rgba(139,92,246,0.2);">
+                <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#c4b5fd;">
+                    <i class="fas fa-forward mr-1"></i> Summary &amp; Key Takeaways
                 </p>
                 <p id="lesson-summary" class="text-gray-300 text-sm leading-relaxed"></p>
             </div>
 
-            <!-- LinkedIn CTA -->
-            <div class="card p-5 mb-5" style="background:rgba(14,118,168,0.04);border-color:rgba(14,118,168,0.18);">
-                <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#7dd3fc;">
-                    <i class="fas fa-external-link-alt mr-1"></i> Apply on LinkedIn
-                </p>
-                <p class="text-sm text-gray-400 mb-4 leading-relaxed">
-                    Put today's lesson into practice — open your <strong class="text-white">LinkedIn profile</strong> and apply the techniques straight away.
-                </p>
-                <a href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition"
-                   style="background: linear-gradient(135deg, #0e76a8, #0369a1);">
-                    <i class="fab fa-linkedin"></i>
-                    Open LinkedIn Profile
-                    <i class="fas fa-external-link-alt text-xs opacity-70"></i>
-                </a>
-            </div>
-
-            <!-- Come back tomorrow CTA -->
-            <div class="glass rounded-xl p-5 flex items-start gap-4 mb-5">
-                <i class="fas fa-clock text-yellow-400 mt-0.5 flex-shrink-0"></i>
-                <div>
-                    <p class="text-sm font-semibold text-yellow-300 mb-1">Come back tomorrow!</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">
-                        Your AI tutor will generate the next lesson when you return. It will remember today's progress and continue building your LinkedIn presence.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Certificate Section (visible after milestone) -->
-            <div id="cert-section" class="hidden rounded-xl p-5 text-center" style="background:linear-gradient(135deg,rgba(14,118,168,0.10),rgba(255,171,64,0.06));border:1px solid rgba(212,175,55,0.3);">
+            <!-- Certificate Section (always visible for 1-day course after completion) -->
+            <div id="cert-section" class="rounded-xl p-5 mb-5 text-center" style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(255,171,64,0.08));border:1px solid rgba(212,175,55,0.3);">
                 <div class="text-4xl mb-3">🎓</div>
-                <h3 class="text-white font-bold text-lg mb-1">7-Day Milestone Achieved!</h3>
-                <p class="text-gray-400 text-sm mb-4">You've completed 7 days of consistent LinkedIn learning. Download your certificate!</p>
-                <button onclick="openCertModal()" class="px-6 py-3 rounded-xl font-bold text-sm transition text-white" style="background:#0e76a8;">
+                <h3 class="text-white font-bold text-lg mb-1">Congratulations! Lesson Completed!</h3>
+                <p class="text-gray-400 text-sm mb-4">You've completed the AI Prompting Masterclass. Claim your certificate below!</p>
+                <button onclick="openCertModal()" class="px-6 py-3 rounded-xl font-bold text-sm transition text-white" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
                     <i class="fas fa-certificate mr-2"></i>Claim Certificate
                 </button>
             </div>
@@ -434,7 +447,7 @@
             <div class="text-5xl mb-4">⚠️</div>
             <p class="text-white font-bold mb-2">Couldn't generate lesson</p>
             <p id="error-msg" class="text-gray-400 text-sm mb-6">An error occurred. Please try again.</p>
-            <button id="retry-btn" onclick="window.courseApp.retryLesson()" class="px-5 py-2 rounded-lg text-sm font-semibold transition" style="background:#0e76a8;">
+            <button onclick="window.courseApp.retryLesson()" class="px-5 py-2 rounded-lg text-sm font-semibold transition" style="background:#7c3aed;">
                 <i class="fas fa-redo mr-1"></i> Retry
             </button>
         </div>
@@ -459,15 +472,13 @@
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
 
-        const COURSE_SLUG = 'linkedin-optimisation';
-        const COURSE_NAME = 'LinkedIn Optimisation';
-        const CERT_MILESTONE = 7;
-        const CERT_ACRONYM = 'LIO';
+        const COURSE_SLUG = 'ai-prompting';
+        const COURSE_NAME = 'AI Prompting Masterclass';
+        const CERT_MILESTONE = 1;
+        const CERT_ACRONYM = 'AIP';
 
         // ---- Helpers ----
-        function todayISO() {
-            return new Date().toISOString().slice(0, 10);
-        }
+        function todayISO() { return new Date().toISOString().slice(0, 10); }
 
         function escapeHtml(str) {
             return String(str)
@@ -507,9 +518,6 @@
             return html;
         }
 
-        // ---- AI Lesson Generation ----
-        let aiModel = null;
-
         // ---- Survey ----
         let surveyAnswers = null;
         const _surveySelections = {};
@@ -519,7 +527,7 @@
             const container = document.getElementById('sq-' + field);
             if (container) {
                 container.querySelectorAll('.survey-option').forEach(btn => {
-                    const oc = btn.getAttribute('onclick') || ''; const m = oc.match(/selectSurveyOption\('([^']*)'\s*,\s*'([^']*)'\)/); btn.classList.toggle('selected', m !== null && m[1] === field && m[2] === value);
+                    btn.classList.toggle('selected', btn.textContent.trim().includes(value) || btn.getAttribute('onclick') === `selectSurveyOption('${field}','${value}')`);
                 });
             }
         };
@@ -573,8 +581,12 @@
         }
 
         // ---- Certificate ----
-        window.openCertModal = function() { document.getElementById('cert-modal').classList.add('visible'); };
-        window.closeCertModal = function() { document.getElementById('cert-modal').classList.remove('visible'); };
+        window.openCertModal = function() {
+            document.getElementById('cert-modal').classList.add('visible');
+        };
+        window.closeCertModal = function() {
+            document.getElementById('cert-modal').classList.remove('visible');
+        };
 
         function populateCertificate(user) {
             const now = new Date();
@@ -588,10 +600,11 @@
                 crypto.getRandomValues(buf);
                 uniquePart = Array.from(buf).map(b => b.toString(16).padStart(2,'0')).join('').toUpperCase();
             }
+            const certId = `AZL-${CERT_ACRONYM}-${now.getFullYear()}-${uniquePart}`;
             document.getElementById('cert-recipient').textContent = user.displayName || user.email || 'Student';
             document.getElementById('cert-course-name').textContent = COURSE_NAME;
             document.getElementById('cert-date').textContent = 'Issued: ' + dateStr;
-            document.getElementById('cert-id').textContent = 'Certificate ID: AZL-' + CERT_ACRONYM + '-' + now.getFullYear() + '-' + uniquePart;
+            document.getElementById('cert-id').textContent = 'Certificate ID: ' + certId;
         }
 
         window.downloadCertificate = async function() {
@@ -614,6 +627,9 @@
             }
         };
 
+        // ---- AI Lesson Generation ----
+        let aiModel = null;
+
         async function initAI() {
             try {
                 const vertexAI = getVertexAI(fbApp);
@@ -626,66 +642,44 @@
         async function generateLesson(dayNumber, previousLesson) {
             if (!aiModel) throw new Error('AI model not available. Please check that Vertex AI is enabled for this Firebase project.');
 
-            const surveyCtx = surveyAnswers ? `\n\nStudent profile from pre-course survey:\n- Experience level: ${escapeHtml(surveyAnswers.level || '')}\n- Learning goal: ${escapeHtml(surveyAnswers.goal || '')}\n- Daily time available: ${escapeHtml(surveyAnswers.time || '')}\n- Preferred learning style: ${escapeHtml(surveyAnswers.style || '')}${surveyAnswers.background ? `\n- Background: ${escapeHtml(surveyAnswers.background)}` : ''}\n\nPlease tailor the lesson depth, examples, and exercises to match this student's profile.` : '';
+            const surveyCtx = surveyAnswers ? `
 
-            let prompt;
-            if (dayNumber === 1 || !previousLesson) {
-                prompt = `You are an expert career development and LinkedIn coach for AZ Learner, a platform for Ghanaian university students.${surveyCtx}
+Student profile from pre-course survey:
+- Experience level with AI tools: ${escapeHtml(surveyAnswers.level || '')}
+- Learning goal: ${escapeHtml(surveyAnswers.goal || '')}
+- Time available: ${escapeHtml(surveyAnswers.time || '')}
+- Preferred learning style: ${escapeHtml(surveyAnswers.style || '')}
+${surveyAnswers.background ? `- Background: ${escapeHtml(surveyAnswers.background)}` : ''}
 
-Generate a structured Day 1 beginner lesson for a "LinkedIn Optimisation" course.
+Please tailor the lesson depth, examples, and exercises to match this student's profile.` : '';
 
-The lesson should help students build a standout LinkedIn profile that attracts recruiters, internship opportunities, and professional connections — with practical advice tailored to Ghanaian university students entering the job market.
+            const prompt = `You are an expert AI educator for AZ Learner, a platform for Ghanaian university students.
+
+Generate a comprehensive Day 1 lesson for an "AI Prompting Masterclass".${surveyCtx}
+
+The lesson must cover:
+- What AI prompting is and why it is a critical skill in 2024/2025
+- The anatomy of an effective prompt (clarity, context, role, format, constraints)
+- Core prompting techniques: zero-shot, few-shot, chain-of-thought, role prompting
+- Practical prompt templates students can use immediately (for essays, coding, research, job applications)
+- Tips for using ChatGPT, Google Gemini, and Copilot effectively
+- Common prompting mistakes and how to fix them
 
 Return ONLY valid JSON (no markdown fences, no explanation) in this exact structure:
 {
   "dayNumber": 1,
   "title": "short lesson title",
   "objective": "one-sentence learning objective",
-  "topics": ["topic1", "topic2", "topic3"],
-  "content": "full lesson content in markdown format with headings, explanations, examples",
-  "exercises": ["practice task 1", "practice task 2"],
-  "summary": "2-3 sentence summary of what was learned and a hint about what comes next"
-}
-
-The content must include:
-- Why LinkedIn matters for Ghanaian university students and graduates
-- How to set up or improve a professional LinkedIn profile (photo, headline, about section)
-- The importance of a keyword-optimised headline and how to write one
-- Tips for a compelling About/Summary section using the first-person voice
-- How LinkedIn's search algorithm works at a high level (keywords, completeness)
-- Actionable first steps students can take today`;
-            } else {
-                const prevTitle = String(previousLesson.title || 'previous lesson').replace(/<[^>]*>/g, '').slice(0, 200);
-                const prevSummary = String(previousLesson.summary || '').replace(/<[^>]*>/g, '').slice(0, 500);
-                const prevTopics = Array.isArray(previousLesson.topics)
-                    ? previousLesson.topics.map(t => String(t).replace(/<[^>]*>/g, '').slice(0, 80)).join(', ')
-                    : '';
-                prompt = `You are an expert career development and LinkedIn coach for AZ Learner, a platform for Ghanaian university students.${surveyCtx}
-
-The student just completed Day ${dayNumber - 1} of the "LinkedIn Optimisation" course:
-- Title: "${prevTitle}"
-- Topics covered: ${prevTopics}
-- Summary: "${prevSummary}"
-
-Generate Day ${dayNumber} of the "LinkedIn Optimisation" course, continuing directly from where yesterday's lesson ended. Build on the previous lesson's concepts and introduce the next logical LinkedIn optimisation strategy.
-
-Return ONLY valid JSON (no markdown fences, no explanation) in this exact structure:
-{
-  "dayNumber": ${dayNumber},
-  "title": "short lesson title",
-  "objective": "one-sentence learning objective",
-  "topics": ["topic1", "topic2", "topic3"],
-  "content": "full lesson content in markdown format with headings, explanations, examples",
-  "exercises": ["practice task 1", "practice task 2"],
-  "summary": "2-3 sentence summary of what was learned today and a hint about what comes next"
+  "topics": ["topic1", "topic2", "topic3", "topic4"],
+  "content": "full lesson content in markdown format with headings, examples, and prompt templates",
+  "exercises": ["exercise 1 description", "exercise 2 description", "exercise 3 description"],
+  "summary": "2-3 sentence summary of what was learned and how to apply it"
 }
 
 The content must:
-- Explicitly build on yesterday's lesson
-- Progress logically through LinkedIn optimisation (e.g. after profile basics: experience & education → skills & endorsements → building a network → content strategy → messaging recruiters → LinkedIn Learning → job search features → personal branding)
-- Include practical, actionable examples relevant to Ghanaian university students (internships, graduate jobs, tech industry, entrepreneurship)
-- Be immediately actionable — students should be able to apply it to their LinkedIn profile today`;
-            }
+- Include at least 3 real prompt examples with before/after comparisons
+- Be engaging and immediately useful to a Ghanaian university student
+- Show how AI tools can help with academic work and career development`;
 
             const result = await aiModel.generateContent(prompt);
             const text = result.response.text().trim();
@@ -736,9 +730,8 @@ The content must:
             const dayNum = lesson.dayNumber || 1;
             document.getElementById('day-badge').textContent = `Day ${dayNum}`;
             document.getElementById('lesson-date').textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'short', day:'numeric' });
-            document.getElementById('progress-text').textContent = `Day ${dayNum} of your journey`;
-            const pct = Math.min(95, 5 + (dayNum - 1) * 3);
-            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-text').textContent = `Day ${dayNum} of ${CERT_MILESTONE}`;
+            document.getElementById('progress-bar').style.width = '100%';
 
             if (isNew) {
                 document.getElementById('new-lesson-badge').classList.remove('hidden');
@@ -765,20 +758,16 @@ The content must:
             (lesson.exercises || []).forEach((ex, i) => {
                 const div = document.createElement('div');
                 div.className = 'exercise-item';
-                div.innerHTML = `<i class="fab fa-linkedin mt-0.5 flex-shrink-0" style="color:#7dd3fc;"></i><span><strong>Task ${i + 1}:</strong> ${escapeHtml(ex)}</span>`;
+                div.innerHTML = `<i class="fas fa-robot mt-0.5 flex-shrink-0" style="color:#c4b5fd;"></i><span><strong>Exercise ${i + 1}:</strong> ${escapeHtml(ex)}</span>`;
                 exercisesList.appendChild(div);
             });
 
             document.getElementById('lesson-summary').textContent = lesson.summary || '';
 
-            // Show certificate section if milestone reached
-            const certSection = document.getElementById('cert-section');
-            if (certSection && dayNum >= CERT_MILESTONE) {
-                certSection.classList.remove('hidden');
-                if (currentUser) populateCertificate(currentUser);
-            }
-
             document.getElementById('lesson-container').classList.remove('hidden');
+
+            // Populate certificate for download
+            if (currentUser) populateCertificate(currentUser);
         }
 
         // ---- Main Flow ----
@@ -791,7 +780,7 @@ The content must:
             document.getElementById('error-state').classList.add('hidden');
 
             try {
-                // Check survey first
+                // Check if survey has been completed
                 if (!surveyAnswers) {
                     setLoadingText('Loading your profile...');
                     const surveyDone = await checkAndShowSurvey(user.uid);
@@ -814,11 +803,9 @@ The content must:
                 setLoadingText('Initialising AI tutor...');
                 await initAI();
 
-                const dayNumber = progress ? (progress.dayNumber || 1) + 1 : 1;
-                const previousLesson = progress ? progress.lastLesson : null;
-
-                setLoadingText(`Generating your Day ${dayNumber} lesson...`);
-                const lesson = await generateLesson(dayNumber, previousLesson);
+                const dayNumber = 1; // 1-day course always generates day 1
+                setLoadingText('Generating your AI Prompting lesson...');
+                const lesson = await generateLesson(dayNumber, null);
 
                 setLoadingText('Saving your progress...');
                 await saveProgress(user.uid, lesson);
@@ -831,9 +818,7 @@ The content must:
         }
 
         window.courseApp = {
-            retryLesson() {
-                if (currentUser) runCourseFlow(currentUser);
-            }
+            retryLesson() { if (currentUser) runCourseFlow(currentUser); }
         };
 
         // ---- Auth ----
@@ -851,7 +836,6 @@ The content must:
         onAuthStateChanged(auth, (user) => {
             const overlay = document.getElementById('auth-overlay');
             const appEl = document.getElementById('app');
-
             if (user) {
                 overlay.classList.add('hidden');
                 appEl.classList.remove('hidden');

@@ -7,7 +7,8 @@
     <link rel="icon" type="image/png" href="../favicon1.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -134,6 +135,27 @@
             border-radius: 20px;
             color: #d8b4fe;
         }
+        /* ── Survey overlay ── */
+        .survey-option {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+        .survey-option:hover { background: rgba(168,85,247,0.15); border-color: rgba(168,85,247,0.4); color: #d8b4fe; }
+        .survey-option.selected { background: rgba(168,85,247,0.2); border-color: #a855f7; color: #d8b4fe; }
+        /* ── Certificate modal ── */
+        #cert-modal { display: none; }
+        #cert-modal.visible { display: flex; }
+        .cert-header-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
+        .cert-footer-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
+        #cert-paper::before { content:''; position:absolute; inset:12px; border:2px solid #b8860b; border-radius:2px; pointer-events:none; z-index:1; }
+        #cert-paper::after  { content:''; position:absolute; inset:17px; border:1px solid #d4af37; border-radius:1px; pointer-events:none; z-index:1; }
     </style>
 </head>
 <body class="antialiased">
@@ -155,6 +177,108 @@
                 </svg>
                 Sign in with Google
             </button>
+        </div>
+    </div>
+
+    <!-- Survey Overlay (shown before first lesson) -->
+    <div id="survey-overlay" class="fixed inset-0 z-40 flex items-center justify-center px-4 hidden" style="background:rgba(15,23,42,0.97);">
+        <div class="glass rounded-2xl p-6 max-w-md w-full" style="max-height:92vh;overflow-y:auto;">
+            <div class="text-center mb-5">
+                <div class="text-4xl mb-2">📋</div>
+                <h2 class="text-xl font-bold text-white">Quick Learning Survey</h2>
+                <p class="text-gray-400 text-sm mt-1">Help our AI personalise your lessons — takes about 1 minute</p>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-semibold text-gray-300 mb-2">1. Your current familiarity with AI tools?</p>
+                <div class="grid grid-cols-3 gap-2" id="sq-level">
+                    <button class="survey-option" onclick="selectSurveyOption('level','Beginner')">🟢 Beginner</button>
+                    <button class="survey-option" onclick="selectSurveyOption('level','Intermediate')">🟡 Intermediate</button>
+                    <button class="survey-option" onclick="selectSurveyOption('level','Advanced')">🔴 Advanced</button>
+                </div>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-semibold text-gray-300 mb-2">2. Your main learning goal?</p>
+                <div class="grid grid-cols-2 gap-2" id="sq-goal">
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Academic research')">📚 Academic research</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Study smarter')">🎓 Study smarter</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','Professional use')">💼 Professional use</button>
+                    <button class="survey-option" onclick="selectSurveyOption('goal','General curiosity')">🎯 General curiosity</button>
+                </div>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-semibold text-gray-300 mb-2">3. Daily time you can dedicate?</p>
+                <div class="grid grid-cols-3 gap-2" id="sq-time">
+                    <button class="survey-option" onclick="selectSurveyOption('time','10-15 min')">⚡ 10-15 min</button>
+                    <button class="survey-option" onclick="selectSurveyOption('time','30 min')">🕐 30 min</button>
+                    <button class="survey-option" onclick="selectSurveyOption('time','1 hour+')">🕑 1 hour+</button>
+                </div>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm font-semibold text-gray-300 mb-2">4. Preferred learning style?</p>
+                <div class="grid grid-cols-1 gap-2" id="sq-style">
+                    <button class="survey-option" onclick="selectSurveyOption('style','Step-by-step with examples')">📖 Step-by-step with examples</button>
+                    <button class="survey-option" onclick="selectSurveyOption('style','Big picture first, then details')">🗺️ Big picture first, then details</button>
+                    <button class="survey-option" onclick="selectSurveyOption('style','Jump straight to practice')">💻 Jump straight to practice</button>
+                </div>
+            </div>
+            <div class="mb-5">
+                <p class="text-sm font-semibold text-gray-300 mb-2">5. Any relevant background? <span class="text-gray-500 font-normal">(optional)</span></p>
+                <textarea id="sq-background" rows="2" maxlength="300" placeholder="e.g. I study Biology, I need help with research papers..." class="w-full rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);"></textarea>
+            </div>
+            <button onclick="submitSurvey()" class="w-full py-3 rounded-xl font-semibold text-sm transition" style="background:#7c3aed;">
+                Start My Personalised Lessons →
+            </button>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="cert-modal" class="fixed inset-0 z-50 items-center justify-center px-4 py-6" style="background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);overflow-y:auto;">
+        <div class="w-full max-w-2xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-white font-bold text-lg">🎓 Certificate of Completion</h3>
+                <div class="flex items-center gap-3">
+                    <button onclick="downloadCertificate()" id="cert-dl-btn" class="px-4 py-2 rounded-lg text-sm font-bold transition text-black" style="background:#FFAB40;">
+                        <i class="fas fa-download mr-1"></i> Download
+                    </button>
+                    <button onclick="closeCertModal()" class="text-gray-400 hover:text-white text-xl w-8 h-8 flex items-center justify-center">✕</button>
+                </div>
+            </div>
+            <div id="cert-paper" style="background:#fff;position:relative;overflow:hidden;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                <div style="position:absolute;top:10px;left:10px;width:50px;height:50px;z-index:2;"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
+                <div style="position:absolute;top:10px;right:10px;width:50px;height:50px;z-index:2;transform:scaleX(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
+                <div style="position:absolute;bottom:10px;left:10px;width:50px;height:50px;z-index:2;transform:scaleY(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
+                <div style="position:absolute;bottom:10px;right:10px;width:50px;height:50px;z-index:2;transform:scale(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
+                <div class="cert-header-bar"></div>
+                <div style="padding:36px 56px 32px;text-align:center;position:relative;z-index:3;">
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Cinzel',serif;font-size:80px;font-weight:900;color:rgba(168,85,247,0.05);white-space:nowrap;pointer-events:none;user-select:none;z-index:0;">AZ LEARNER</div>
+                    <div style="font-size:40px;line-height:1;margin-bottom:6px;">🧠</div>
+                    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:#7c3aed;font-weight:700;margin-bottom:4px;">AZ Learner</div>
+                    <div style="font-family:'Cinzel',serif;font-size:26px;font-weight:900;color:#0f172a;letter-spacing:0.06em;margin-bottom:4px;">Certificate of Completion</div>
+                    <div style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:#64748b;margin-bottom:22px;">AI-Powered Daily Learning</div>
+                    <div style="display:flex;align-items:center;gap:10px;margin:0 auto 22px;max-width:420px;"><div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#d4af37);"></div><span style="color:#FFAB40;font-size:16px;">✦</span><div style="flex:1;height:1px;background:linear-gradient(90deg,#d4af37,transparent);"></div></div>
+                    <div style="font-size:12px;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">This certifies that</div>
+                    <div id="cert-recipient" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:#1e3a8a;line-height:1.2;border-bottom:2px solid #d4af37;display:inline-block;padding-bottom:4px;margin-bottom:20px;min-width:260px;">Student Name</div>
+                    <p style="font-size:13px;color:#374151;line-height:1.8;max-width:500px;margin:0 auto 18px;">has successfully completed the <strong id="cert-course-name" style="color:#0f172a;">Mastering NotebookLM</strong> course on AZ Learner, demonstrating consistent dedication and proficiency in Google NotebookLM and AI-powered research.</p>
+                    <div style="display:inline-block;background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:5px 18px;border-radius:30px;margin-bottom:28px;">🚀 &nbsp;Powered by AZ Learner AI</div>
+                    <div style="display:flex;justify-content:center;align-items:flex-end;gap:60px;flex-wrap:wrap;margin-bottom:20px;">
+                        <div style="text-align:center;min-width:140px;">
+                            <img id="cert-sig-img" src="../signature.png" alt="Signature" style="height:48px;object-fit:contain;margin-bottom:4px;display:block;margin-left:auto;margin-right:auto;" crossorigin="anonymous">
+                            <div style="width:140px;height:1px;background:#0f172a;margin:0 auto 4px;"></div>
+                            <div style="font-size:12px;font-weight:700;color:#0f172a;">Francis Pwavwe</div>
+                            <div style="font-size:10px;color:#64748b;letter-spacing:0.06em;">Founder &amp; CEO, AZ Learner</div>
+                        </div>
+                        <div style="text-align:center;min-width:100px;">
+                            <div style="font-size:40px;line-height:1;margin-bottom:4px;">🏅</div>
+                            <div style="font-size:11px;font-weight:700;color:#0f172a;">Official Seal</div>
+                            <div style="font-size:10px;color:#64748b;letter-spacing:0.06em;">AZ LEARNER</div>
+                        </div>
+                    </div>
+                    <div id="cert-date" style="font-size:10px;color:#94a3b8;letter-spacing:0.1em;margin-top:4px;"></div>
+                    <div id="cert-id" style="font-size:10px;color:#cbd5e1;letter-spacing:0.06em;margin-top:3px;font-family:monospace;"></div>
+                </div>
+                <div class="cert-footer-bar"></div>
+            </div>
+            <p class="text-center text-gray-500 text-xs mt-3">Click Download to save as an image.</p>
         </div>
     </div>
 
@@ -283,7 +407,7 @@
             </div>
 
             <!-- Come back tomorrow CTA -->
-            <div class="glass rounded-xl p-5 flex items-start gap-4">
+            <div class="glass rounded-xl p-5 flex items-start gap-4 mb-5">
                 <i class="fas fa-clock text-yellow-400 mt-0.5 flex-shrink-0"></i>
                 <div>
                     <p class="text-sm font-semibold text-yellow-300 mb-1">Come back tomorrow!</p>
@@ -291,6 +415,16 @@
                         Your AI tutor will generate the next lesson when you return. It will remember today's progress and continue building your NotebookLM skills.
                     </p>
                 </div>
+            </div>
+
+            <!-- Certificate Section (visible after milestone) -->
+            <div id="cert-section" class="hidden rounded-xl p-5 text-center" style="background:linear-gradient(135deg,rgba(168,85,247,0.10),rgba(255,171,64,0.06));border:1px solid rgba(212,175,55,0.3);">
+                <div class="text-4xl mb-3">🎓</div>
+                <h3 class="text-white font-bold text-lg mb-1">7-Day Milestone Achieved!</h3>
+                <p class="text-gray-400 text-sm mb-4">You've completed 7 days of consistent NotebookLM learning. Download your certificate!</p>
+                <button onclick="openCertModal()" class="px-6 py-3 rounded-xl font-bold text-sm transition text-white" style="background:#7c3aed;">
+                    <i class="fas fa-certificate mr-2"></i>Claim Certificate
+                </button>
             </div>
 
         </div>
@@ -326,6 +460,9 @@
         const db = getFirestore(fbApp);
 
         const COURSE_SLUG = 'notebook-lm';
+        const COURSE_NAME = 'Mastering NotebookLM';
+        const CERT_MILESTONE = 7;
+        const CERT_ACRONYM = 'NLM';
 
         // ---- Helpers ----
         function todayISO() {
@@ -373,6 +510,110 @@
         // ---- AI Lesson Generation ----
         let aiModel = null;
 
+        // ---- Survey ----
+        let surveyAnswers = null;
+        const _surveySelections = {};
+
+        window.selectSurveyOption = function(field, value) {
+            _surveySelections[field] = value;
+            const container = document.getElementById('sq-' + field);
+            if (container) {
+                container.querySelectorAll('.survey-option').forEach(btn => {
+                    const oc = btn.getAttribute('onclick') || ''; const m = oc.match(/selectSurveyOption\('([^']*)'\s*,\s*'([^']*)'\)/); btn.classList.toggle('selected', m !== null && m[1] === field && m[2] === value);
+                });
+            }
+        };
+
+        window.submitSurvey = async function() {
+            const required = ['level', 'goal', 'time', 'style'];
+            for (const f of required) {
+                if (!_surveySelections[f]) {
+                    alert('Please answer all required questions before continuing.');
+                    return;
+                }
+            }
+            const bgEl = document.getElementById('sq-background');
+            const answers = {
+                level: _surveySelections.level,
+                goal: _surveySelections.goal,
+                time: _surveySelections.time,
+                style: _surveySelections.style,
+                background: bgEl ? bgEl.value.slice(0, 300) : ''
+            };
+            try {
+                const surveyRef = doc(db, 'course_surveys', `${currentUser.uid}_${COURSE_SLUG}`);
+                await setDoc(surveyRef, {
+                    answers,
+                    userId: currentUser.uid,
+                    courseSlug: COURSE_SLUG,
+                    completedAt: serverTimestamp()
+                });
+                surveyAnswers = answers;
+                document.getElementById('survey-overlay').classList.add('hidden');
+                runCourseFlow(currentUser);
+            } catch (e) {
+                console.error('Survey save error:', e);
+                alert('Could not save your survey. Please try again.');
+            }
+        };
+
+        async function checkAndShowSurvey(userId) {
+            try {
+                const surveyRef = doc(db, 'course_surveys', `${userId}_${COURSE_SLUG}`);
+                const snap = await getDoc(surveyRef);
+                if (snap.exists()) {
+                    surveyAnswers = snap.data().answers || null;
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Survey check error (proceeding without):', e);
+                return true;
+            }
+            return false;
+        }
+
+        // ---- Certificate ----
+        window.openCertModal = function() { document.getElementById('cert-modal').classList.add('visible'); };
+        window.closeCertModal = function() { document.getElementById('cert-modal').classList.remove('visible'); };
+
+        function populateCertificate(user) {
+            const now = new Date();
+            const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            let uniquePart;
+            if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                uniquePart = crypto.randomUUID().split('-')[0].toUpperCase();
+            } else {
+                const buf = new Uint8Array(4);
+                crypto.getRandomValues(buf);
+                uniquePart = Array.from(buf).map(b => b.toString(16).padStart(2,'0')).join('').toUpperCase();
+            }
+            document.getElementById('cert-recipient').textContent = user.displayName || user.email || 'Student';
+            document.getElementById('cert-course-name').textContent = COURSE_NAME;
+            document.getElementById('cert-date').textContent = 'Issued: ' + dateStr;
+            document.getElementById('cert-id').textContent = 'Certificate ID: AZL-' + CERT_ACRONYM + '-' + now.getFullYear() + '-' + uniquePart;
+        }
+
+        window.downloadCertificate = async function() {
+            const btn = document.getElementById('cert-dl-btn');
+            btn.textContent = 'Generating...';
+            btn.disabled = true;
+            try {
+                const el = document.getElementById('cert-paper');
+                const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+                const link = document.createElement('a');
+                link.download = `AZ-Learner-${COURSE_SLUG}-Certificate.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (e) {
+                console.error('Certificate download error:', e);
+                alert('Download failed. Try right-clicking the certificate and saving the image directly.');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-download mr-1"></i> Download';
+                btn.disabled = false;
+            }
+        };
+
         async function initAI() {
             try {
                 const vertexAI = getVertexAI(fbApp);
@@ -385,9 +626,11 @@
         async function generateLesson(dayNumber, previousLesson) {
             if (!aiModel) throw new Error('AI model not available. Please check that Vertex AI is enabled for this Firebase project.');
 
+            const surveyCtx = surveyAnswers ? `\n\nStudent profile from pre-course survey:\n- Experience level: ${escapeHtml(surveyAnswers.level || '')}\n- Learning goal: ${escapeHtml(surveyAnswers.goal || '')}\n- Daily time available: ${escapeHtml(surveyAnswers.time || '')}\n- Preferred learning style: ${escapeHtml(surveyAnswers.style || '')}${surveyAnswers.background ? `\n- Background: ${escapeHtml(surveyAnswers.background)}` : ''}\n\nPlease tailor the lesson depth, examples, and exercises to match this student's profile.` : '';
+
             let prompt;
             if (dayNumber === 1 || !previousLesson) {
-                prompt = `You are an expert AI productivity tutor for AZ Learner, a platform for Ghanaian university students.
+                prompt = `You are an expert AI productivity tutor for AZ Learner, a platform for Ghanaian university students.${surveyCtx}
 
 Generate a structured Day 1 beginner lesson for a "Mastering NotebookLM" course.
 
@@ -419,7 +662,7 @@ The content must include:
                 const prevTopics = Array.isArray(previousLesson.topics)
                     ? previousLesson.topics.map(t => String(t).replace(/<[^>]*>/g, '').slice(0, 80)).join(', ')
                     : '';
-                prompt = `You are an expert AI productivity tutor for AZ Learner, a platform for Ghanaian university students.
+                prompt = `You are an expert AI productivity tutor for AZ Learner, a platform for Ghanaian university students.${surveyCtx}
 
 The student just completed Day ${dayNumber - 1} of the "Mastering NotebookLM" course:
 - Title: "${prevTitle}"
@@ -530,6 +773,13 @@ The content must:
 
             document.getElementById('lesson-summary').textContent = lesson.summary || '';
 
+            // Show certificate section if milestone reached
+            const certSection = document.getElementById('cert-section');
+            if (certSection && dayNum >= CERT_MILESTONE) {
+                certSection.classList.remove('hidden');
+                if (currentUser) populateCertificate(currentUser);
+            }
+
             document.getElementById('lesson-container').classList.remove('hidden');
         }
 
@@ -543,6 +793,17 @@ The content must:
             document.getElementById('error-state').classList.add('hidden');
 
             try {
+                // Check survey first
+                if (!surveyAnswers) {
+                    setLoadingText('Loading your profile...');
+                    const surveyDone = await checkAndShowSurvey(user.uid);
+                    if (!surveyDone) {
+                        document.getElementById('loading-state').classList.add('hidden');
+                        document.getElementById('survey-overlay').classList.remove('hidden');
+                        return;
+                    }
+                }
+
                 setLoadingText('Checking your progress...');
                 const progress = await loadProgress(user.uid);
                 const today = todayISO();
@@ -602,6 +863,8 @@ The content must:
             } else {
                 overlay.classList.remove('hidden');
                 appEl.classList.add('hidden');
+                document.getElementById('survey-overlay').classList.add('hidden');
+                document.getElementById('cert-modal').classList.remove('visible');
             }
         });
     </script>
