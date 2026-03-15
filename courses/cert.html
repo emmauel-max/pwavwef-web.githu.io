@@ -21,6 +21,7 @@
         .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         .spinner { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #a78bfa; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        #cert-paper { width: 794px; min-height: 1123px; display: flex; flex-direction: column; }
         #cert-paper::before { content:''; position:absolute; inset:12px; border:2px solid #b8860b; border-radius:2px; pointer-events:none; z-index:1; }
         #cert-paper::after  { content:''; position:absolute; inset:17px; border:1px solid #d4af37; border-radius:1px; pointer-events:none; z-index:1; }
         .cert-bar { height: 7px; }
@@ -53,7 +54,7 @@
 
     <!-- Certificate View -->
     <div id="cert-view" class="hidden flex-1 py-10 px-4">
-        <div class="max-w-2xl mx-auto">
+        <div class="mx-auto" style="width:fit-content;max-width:100%;overflow-x:auto;">
             <!-- Verified badge -->
             <div class="flex items-center justify-center gap-2 mb-6">
                 <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold" style="background:rgba(22,163,74,0.15);border:1px solid rgba(22,163,74,0.35);color:#4ade80;">
@@ -72,7 +73,7 @@
 
                 <div id="cert-header-bar" class="cert-bar"></div>
 
-                <div style="padding:36px 56px 32px;text-align:center;position:relative;z-index:3;">
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 64px;text-align:center;position:relative;z-index:3;">
                     <div id="cert-watermark" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Cinzel',serif;font-size:80px;font-weight:900;white-space:nowrap;pointer-events:none;user-select:none;z-index:0;">AZ LEARNER</div>
 
                     <div id="cert-emoji" style="font-size:40px;line-height:1;margin-bottom:6px;">🎓</div>
@@ -212,7 +213,8 @@
             btn.disabled = true;
             try {
                 const el = document.getElementById('cert-paper');
-                const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+                await document.fonts.ready;
+                const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, imageTimeout: 0, backgroundColor: '#ffffff', logging: false });
                 const link = document.createElement('a');
                 link.download = 'AZ-Learner-Certificate.png';
                 link.href = canvas.toDataURL('image/png');
