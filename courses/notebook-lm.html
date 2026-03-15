@@ -154,6 +154,7 @@
         #cert-modal.visible { display: flex; }
         .cert-header-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
         .cert-footer-bar { height: 7px; background: linear-gradient(90deg,#1e3a8a,#7c3aed,#FFAB40,#7c3aed,#1e3a8a); }
+        #cert-paper { width: 794px; min-height: 1123px; display: flex; flex-direction: column; }
         #cert-paper::before { content:''; position:absolute; inset:12px; border:2px solid #b8860b; border-radius:2px; pointer-events:none; z-index:1; }
         #cert-paper::after  { content:''; position:absolute; inset:17px; border:1px solid #d4af37; border-radius:1px; pointer-events:none; z-index:1; }
     </style>
@@ -238,7 +239,7 @@
 
     <!-- Certificate Modal -->
     <div id="cert-modal" class="fixed inset-0 z-50 items-center justify-center px-4 py-6" style="background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);overflow-y:auto;">
-        <div class="w-full max-w-2xl mx-auto">
+        <div class="mx-auto" style="width:fit-content;max-width:100%;overflow-x:auto;">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-white font-bold text-lg">🎓 Certificate of Completion</h3>
                 <div class="flex items-center gap-3">
@@ -254,7 +255,7 @@
                 <div style="position:absolute;bottom:10px;left:10px;width:50px;height:50px;z-index:2;transform:scaleY(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
                 <div style="position:absolute;bottom:10px;right:10px;width:50px;height:50px;z-index:2;transform:scale(-1);"><svg viewBox="0 0 56 56" fill="none"><path d="M4 4 L4 28 M4 4 L28 4" stroke="#d4af37" stroke-width="1.5"/><path d="M4 4 L20 20" stroke="#d4af37" stroke-width="1"/><circle cx="4" cy="4" r="3" fill="#FFAB40"/><circle cx="4" cy="28" r="2" fill="#d4af37"/><circle cx="28" cy="4" r="2" fill="#d4af37"/></svg></div>
                 <div class="cert-header-bar"></div>
-                <div style="padding:36px 56px 32px;text-align:center;position:relative;z-index:3;">
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 64px;text-align:center;position:relative;z-index:3;">
                     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-family:'Cinzel',serif;font-size:80px;font-weight:900;color:rgba(168,85,247,0.05);white-space:nowrap;pointer-events:none;user-select:none;z-index:0;">AZ LEARNER</div>
                     <div style="font-size:40px;line-height:1;margin-bottom:6px;">🧠</div>
                     <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:#7c3aed;font-weight:700;margin-bottom:4px;">AZ Learner</div>
@@ -666,7 +667,8 @@
             btn.disabled = true;
             try {
                 const el = document.getElementById('cert-paper');
-                const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+                await document.fonts.ready;
+                const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true, imageTimeout: 0, backgroundColor: '#ffffff', logging: false });
                 const link = document.createElement('a');
                 link.download = `AZ-Learner-${COURSE_SLUG}-Certificate.png`;
                 link.href = canvas.toDataURL('image/png');
