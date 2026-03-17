@@ -162,22 +162,36 @@
 <body class="antialiased">
 
     <!-- Auth Overlay -->
-    <div id="auth-overlay" class="fixed inset-0 z-50 bg-gray-950 flex flex-col items-center justify-center px-6">
-        <div class="text-center max-w-sm">
-            <div class="text-6xl mb-6">🌐</div>
-            <h1 class="text-2xl font-black mb-2">HTML &amp; CSS Course</h1>
-            <p class="text-gray-400 mb-8 text-sm leading-relaxed">
-                Sign in to access your AI-powered daily lessons and track your progress.
-            </p>
-            <button id="google-signin-btn" class="btn-google mx-auto">
+    <div id="auth-overlay" class="fixed inset-0 z-50 bg-gray-950 flex flex-col items-center justify-center px-6 overflow-y-auto py-8">
+        <div class="w-full max-w-sm">
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-3">🌐</div>
+                <h1 class="text-2xl font-black mb-1">HTML &amp; CSS Course</h1>
+                <p class="text-gray-400 text-sm">Sign in to access your AI-powered daily lessons and track your progress.</p>
+            </div>
+            <button id="google-signin-btn" class="btn-google w-full justify-center mb-4">
                 <svg width="20" height="20" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.7-6.7C35.7 2.4 30.2 0 24 0 14.6 0 6.6 5.3 2.6 13.1l7.8 6.1C12.3 13 17.7 9.5 24 9.5z"/>
                     <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.3z"/>
                     <path fill="#FBBC05" d="M10.4 28.8A14.5 14.5 0 0 1 9.5 24c0-1.7.3-3.3.9-4.8L2.6 13.1A24 24 0 0 0 0 24c0 3.8.9 7.5 2.6 10.9l7.8-6.1z"/>
                     <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.3 0-11.7-4.2-13.6-10l-7.8 6.1C6.6 42.7 14.6 48 24 48z"/>
                 </svg>
-                Sign in with Google
+                Continue with Google
             </button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex-1 h-px bg-gray-800"></div>
+                <span class="text-gray-600 text-xs">or</span>
+                <div class="flex-1 h-px bg-gray-800"></div>
+            </div>
+            <input id="auth-email" type="email" placeholder="Email address" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-blue-500 mb-3">
+            <input id="auth-password" type="password" placeholder="Password" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-blue-500 mb-3">
+            <input id="auth-name" type="text" placeholder="Your full name" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-blue-500 mb-3 hidden">
+            <p id="auth-msg" class="text-xs mb-3 hidden"></p>
+            <button id="auth-email-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition mb-3">Sign In</button>
+            <div class="flex items-center justify-between">
+                <button id="auth-toggle-btn" class="text-blue-400 text-xs hover:underline">Create account</button>
+                <button id="auth-reset-btn" class="text-gray-500 text-xs hover:underline">Forgot password?</button>
+            </div>
         </div>
     </div>
 
@@ -436,7 +450,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
         import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-vertexai.js";
 
@@ -902,13 +916,76 @@ The content must:
             }
         };
 
-        // ---- Auth ----
+        // ---- Auth Helpers ----
+        let _authMode = 'signin';
+        function _authMsg(msg, isError = true) {
+            const el = document.getElementById('auth-msg');
+            el.textContent = msg;
+            el.className = 'text-xs mb-3 ' + (isError ? 'text-red-400' : 'text-green-400');
+            el.classList.remove('hidden');
+        }
+        function _clearAuthMsg() { document.getElementById('auth-msg').classList.add('hidden'); }
+
+        // Handle Google redirect result on page load
+        getRedirectResult(auth).catch(e => {
+            if (e.code) _authMsg(e.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.?/, ''));
+        });
+
+        // Google sign-in (popup with redirect fallback)
         document.getElementById('google-signin-btn').addEventListener('click', async () => {
+            _clearAuthMsg();
+            const provider = new GoogleAuthProvider();
             try {
-                const provider = new GoogleAuthProvider();
                 await signInWithPopup(auth, provider);
             } catch (e) {
-                alert('Sign-in failed: ' + e.message);
+                if (e.code === 'auth/popup-blocked') {
+                    await signInWithRedirect(auth, provider);
+                } else if (e.code !== 'auth/popup-closed-by-user') {
+                    _authMsg(e.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.?/, ''));
+                }
+            }
+        });
+
+        // Toggle sign-in / create account
+        document.getElementById('auth-toggle-btn').addEventListener('click', () => {
+            _authMode = _authMode === 'signin' ? 'signup' : 'signin';
+            document.getElementById('auth-name').classList.toggle('hidden', _authMode === 'signin');
+            document.getElementById('auth-email-btn').textContent = _authMode === 'signin' ? 'Sign In' : 'Create Account';
+            document.getElementById('auth-toggle-btn').textContent = _authMode === 'signin' ? 'Create account' : 'Sign in instead';
+            document.getElementById('auth-reset-btn').classList.toggle('hidden', _authMode === 'signup');
+            _clearAuthMsg();
+        });
+
+        // Email/password submit
+        document.getElementById('auth-email-btn').addEventListener('click', async () => {
+            _clearAuthMsg();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            if (!email || !password) { _authMsg('Please enter your email and password.'); return; }
+            try {
+                if (_authMode === 'signup') {
+                    const name = document.getElementById('auth-name').value.trim();
+                    if (!name) { _authMsg('Please enter your full name.'); return; }
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    await updateProfile(cred.user, { displayName: name });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (e) {
+                _authMsg(e.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.?/, ''));
+            }
+        });
+
+        // Password reset
+        document.getElementById('auth-reset-btn').addEventListener('click', async () => {
+            _clearAuthMsg();
+            const email = document.getElementById('auth-email').value.trim();
+            if (!email) { _authMsg('Enter your email address above first.'); return; }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                _authMsg('Password reset email sent! Check your inbox.', false);
+            } catch (e) {
+                _authMsg(e.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.?/, ''));
             }
         });
 
